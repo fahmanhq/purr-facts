@@ -12,6 +12,13 @@ dependencyResolutionManagement {
         mavenCentral()
     }
 }
-rootProject.name = "edison_android_exercise"
+rootProject.name = "purr-facts"
 
 include(":app")
+include(":domain")
+include(":database")
+include(":data:api")
+include(":data:impl")
+include(":network")
+include(":core:ui")
+include(":feature:factforyou")

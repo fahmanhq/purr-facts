@@ -1,11 +1,11 @@
 package jp.speakbuddy.edisonandroidexercise.ui
 
-import jp.speakbuddy.edisonandroidexercise.ui.fact.FactViewModel
+import app.purrfacts.feature.factforyou.FactViewModel
 import org.junit.Test
 
 class FactViewModelTest {
 
-    private val viewModel = FactViewModel()
+    private val viewModel = app.purrfacts.feature.factforyou.FactViewModel()
 
     @Test
     fun updateFact() {
