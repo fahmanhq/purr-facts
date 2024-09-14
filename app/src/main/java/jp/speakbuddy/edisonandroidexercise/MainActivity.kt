@@ -9,13 +9,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
 import app.purrfacts.feature.factforyou.FactScreen
 import app.purrfacts.feature.factforyou.FactViewModel
-import app.purrfacts.core.ui.EdisonAndroidExerciseTheme
+import app.purrfacts.core.ui.AppTheme
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
-            EdisonAndroidExerciseTheme {
+            AppTheme {
                 // A surface container using the 'background' color from the theme
                 Surface(
                     modifier = Modifier.fillMaxSize(),

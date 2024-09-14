@@ -1,6 +1,5 @@
 package jp.speakbuddy.edisonandroidexercise.ui
 
-import app.purrfacts.feature.factforyou.FactViewModel
 import org.junit.Test
 
 class FactViewModelTest {
@@ -13,7 +12,7 @@ class FactViewModelTest {
         val initialFact = "initial"
         var fact = initialFact
 
-        fact = viewModel.updateFact { loading = false }
+        fact = viewModel.updateFact()
 
         assert(!loading)
         assert(fact != initialFact)
