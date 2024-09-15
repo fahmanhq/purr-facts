@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 
     kotlin("kapt")
 }
@@ -55,6 +56,7 @@ dependencies {
 
     // Hilt
     implementation(libs.hilt)
+    implementation(libs.androidx.hilt.navigation.compose)
     kapt(libs.hilt.android.compiler)
 
     implementation(platform(libs.androidx.compose.bom))
@@ -65,6 +67,9 @@ dependencies {
     implementation(libs.androidx.ui)
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
+
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

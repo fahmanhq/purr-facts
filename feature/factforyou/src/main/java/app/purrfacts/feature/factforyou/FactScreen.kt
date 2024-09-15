@@ -27,13 +27,14 @@ import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import app.purrfacts.core.ui.AppTheme
 import app.purrfacts.core.ui.Result
 import app.purrfacts.core.ui.component.LoadingIndicator
 
 @Composable
-fun FactScreen(
-    viewModel: FactViewModel
+internal fun FactScreen(
+    viewModel: FactViewModel = hiltViewModel()
 ) {
     FactScreen(
         factUiState = viewModel.uiState,
