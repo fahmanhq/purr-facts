@@ -59,6 +59,7 @@ android {
 dependencies {
     implementation(project(":core:ui"))
     implementation(project(":feature:factforyou"))
+    implementation(project(":data:impl")) // TODO : Change to :data:wiring for DI-related codes
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)

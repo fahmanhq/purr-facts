@@ -52,7 +52,7 @@ android {
 
 dependencies {
     implementation(project(":core:ui"))
-    implementation(project(":network"))
+    implementation(project(":data:api"))
 
     // Hilt
     implementation(libs.hilt)

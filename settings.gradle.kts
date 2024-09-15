@@ -15,7 +15,6 @@ dependencyResolutionManagement {
 rootProject.name = "purr-facts"
 
 include(":app")
-include(":domain")
 include(":database")
 include(":data:api")
 include(":data:impl")

@@ -6,13 +6,14 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.purrfacts.core.ui.Result
-import app.purrfacts.network.serviceapi.FactServiceProvider
+import app.purrfacts.data.api.FactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+
 @HiltViewModel
 class FactViewModel @Inject constructor(
-
+    private val factRepository: FactRepository
 ) : ViewModel() {
 
     var uiState by mutableStateOf<Result<FactUiState>>(Result.Loading)
@@ -27,7 +28,7 @@ class FactViewModel @Inject constructor(
             runCatching {
                 uiState = Result.Loading
 
-                val newFact = FactServiceProvider.provide().getFact().fact
+                val newFact = factRepository.getNewFact()
                 uiState = Result.Success(
                     FactUiState(
                         fact = newFact,
