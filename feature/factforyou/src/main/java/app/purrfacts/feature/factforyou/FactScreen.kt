@@ -30,6 +30,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.purrfacts.core.ui.AppTheme
 import app.purrfacts.core.ui.Result
+import app.purrfacts.core.ui.component.ErrorIndicator
 import app.purrfacts.core.ui.component.LoadingIndicator
 
 @Composable
@@ -52,7 +53,13 @@ private fun FactScreen(
     when (factUiState) {
         Result.Loading -> LoadingIndicator()
         is Result.Success -> FactScreenContent(factUiState, onUpdateFactBtnClicked)
-        is Result.Error -> TODO()
+        is Result.Error -> ErrorIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x88FFFFFF)),
+            customMessage = factUiState.exception.message,
+            retryAllowed = true
+        ) {}
     }
 }
 

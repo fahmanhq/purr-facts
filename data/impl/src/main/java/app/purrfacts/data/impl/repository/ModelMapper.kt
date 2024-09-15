@@ -1,11 +1,11 @@
 package app.purrfacts.data.impl.repository
 
 import app.purrfacts.data.api.model.Fact
-import app.purrfacts.network.model.FactResponse
+import app.purrfacts.database.model.FactDbEntity
 
-fun FactResponse.toFact(): Fact =
+fun FactDbEntity.toFact(): Fact =
     Fact(
-        id = 0,
+        id = id,
         fact = fact,
         length = length
     )

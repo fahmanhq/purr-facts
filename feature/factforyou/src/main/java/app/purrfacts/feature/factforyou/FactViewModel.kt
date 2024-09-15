@@ -20,7 +20,27 @@ class FactViewModel @Inject constructor(
         private set
 
     init {
-        updateFact()
+        loadStartingFact()
+    }
+
+    private fun loadStartingFact() {
+        viewModelScope.launch {
+            runCatching {
+                uiState = Result.Loading
+
+                val newFact = factRepository.getLastSavedFact()
+                uiState = Result.Success(
+                    FactUiState(
+                        fact = newFact.fact,
+                        isMultipleCatsFact = newFact.fact.contains("cats", ignoreCase = true),
+                        length = newFact.length
+                    )
+                )
+            }.onFailure {
+                uiState = Result.Error(it)
+                it.printStackTrace()
+            }
+        }
     }
 
     fun updateFact() {
@@ -38,6 +58,7 @@ class FactViewModel @Inject constructor(
                 )
             }.onFailure {
                 uiState = Result.Error(it)
+                it.printStackTrace()
             }
         }
     }

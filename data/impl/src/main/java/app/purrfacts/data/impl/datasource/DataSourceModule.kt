@@ -1,5 +1,7 @@
 package app.purrfacts.data.impl.datasource
 
+import app.purrfacts.data.impl.datasource.local.DefaultLocalFactDataSource
+import app.purrfacts.data.impl.datasource.local.LocalFactDataSource
 import app.purrfacts.data.impl.datasource.remote.DefaultRemoteFactDataSource
 import app.purrfacts.data.impl.datasource.remote.RemoteFactDataSource
 import dagger.Binds
@@ -12,5 +14,8 @@ import dagger.hilt.components.SingletonComponent
 interface DataSourceModule {
 
     @Binds
-    fun bindRemoteDataSource(impl: DefaultRemoteFactDataSource): RemoteFactDataSource
+    fun bindRemoteFactDataSource(impl: DefaultRemoteFactDataSource): RemoteFactDataSource
+
+    @Binds
+    fun bindLocalFactDataSource(impl: DefaultLocalFactDataSource): LocalFactDataSource
 }

@@ -24,11 +24,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
-import app.purrfacts.core.ui.ColorPalette
 import app.purrfacts.core.ui.AppTheme
+import app.purrfacts.core.ui.ColorPalette
 
 @Composable
-internal fun ErrorIndicator(
+fun ErrorIndicator(
     modifier: Modifier,
     customMessage: String? = null,
     retryAllowed: Boolean,

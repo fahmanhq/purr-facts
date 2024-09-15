@@ -40,6 +40,7 @@ android {
 
 dependencies {
     implementation(project(":data:api"))
+    implementation(project(":database"))
     implementation(project(":network"))
 
     // Hilt
