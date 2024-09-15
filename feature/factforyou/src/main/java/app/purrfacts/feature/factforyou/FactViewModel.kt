@@ -31,8 +31,8 @@ class FactViewModel @Inject constructor(
                 val newFact = factRepository.getNewFact()
                 uiState = Result.Success(
                     FactUiState(
-                        fact = newFact,
-                        isMultipleCatsFact = newFact.contains("cats", ignoreCase = true),
+                        fact = newFact.fact,
+                        isMultipleCatsFact = newFact.fact.contains("cats", ignoreCase = true),
                         length = newFact.length
                     )
                 )

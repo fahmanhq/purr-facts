@@ -1,4 +1,4 @@
-package app.purrfacts.data.impl
+package app.purrfacts.data.impl.repository
 
 import app.purrfacts.data.api.FactRepository
 import dagger.Binds
