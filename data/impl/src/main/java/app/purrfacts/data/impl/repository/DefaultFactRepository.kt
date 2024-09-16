@@ -26,4 +26,9 @@ class DefaultFactRepository @Inject constructor(
         val savedFact = localFactDataSource.saveFact(newFact.fact)
         return savedFact.toFact()
     }
+
+    override suspend fun getAllSavedFacts(): List<Fact> {
+        return localFactDataSource.getAllSavedFacts()
+            .map { it.toFact() }
+    }
 }
