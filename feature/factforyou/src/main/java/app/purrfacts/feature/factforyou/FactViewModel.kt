@@ -11,6 +11,9 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+private const val LONG_FACT_THRESHOLD = 100
+private const val CATS_KEYWORD = "cats"
+
 @HiltViewModel
 class FactViewModel @Inject constructor(
     private val factRepository: FactRepository
@@ -28,14 +31,16 @@ class FactViewModel @Inject constructor(
             runCatching {
                 uiState = Result.Loading
 
-                val newFact = factRepository.getLastSavedFact()
-                uiState = Result.Success(
-                    FactUiState(
-                        fact = newFact.fact,
-                        isMultipleCatsFact = newFact.fact.contains("cats", ignoreCase = true),
-                        length = newFact.length
+                val lastSavedFact = factRepository.getLastSavedFact()
+                uiState = lastSavedFact.fact.let {
+                    Result.Success(
+                        FactUiState(
+                            fact = it,
+                            containsCats = it.contains(CATS_KEYWORD, ignoreCase = true),
+                            isLongFact = it.length > LONG_FACT_THRESHOLD
+                        )
                     )
-                )
+                }
             }.onFailure {
                 uiState = Result.Error(it)
                 it.printStackTrace()
@@ -49,13 +54,15 @@ class FactViewModel @Inject constructor(
                 uiState = Result.Loading
 
                 val newFact = factRepository.getNewFact()
-                uiState = Result.Success(
-                    FactUiState(
-                        fact = newFact.fact,
-                        isMultipleCatsFact = newFact.fact.contains("cats", ignoreCase = true),
-                        length = newFact.length
+                uiState = newFact.fact.let {
+                    Result.Success(
+                        FactUiState(
+                            fact = it,
+                            containsCats = it.contains(CATS_KEYWORD, ignoreCase = true),
+                            isLongFact = it.length > LONG_FACT_THRESHOLD
+                        )
                     )
-                )
+                }
             }.onFailure {
                 uiState = Result.Error(it)
                 it.printStackTrace()
@@ -65,8 +72,8 @@ class FactViewModel @Inject constructor(
 
     data class FactUiState(
         val fact: String,
-        val isMultipleCatsFact: Boolean,
-        val length: Int
+        val containsCats: Boolean,
+        val isLongFact: Boolean
     )
 }
 

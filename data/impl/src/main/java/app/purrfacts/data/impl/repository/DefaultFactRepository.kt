@@ -15,7 +15,7 @@ class DefaultFactRepository @Inject constructor(
         val lastSavedFact =
             localFactDataSource.getLastSavedFact() ?: run {
                 val newFact = remoteFactDataSource.getNewRandomFact()
-                val savedFact = localFactDataSource.saveFact(newFact.fact, newFact.length)
+                val savedFact = localFactDataSource.saveFact(newFact.fact)
                 savedFact
             }
         return lastSavedFact.toFact()
@@ -23,7 +23,7 @@ class DefaultFactRepository @Inject constructor(
 
     override suspend fun getNewFact(): Fact {
         val newFact = remoteFactDataSource.getNewRandomFact()
-        val savedFact = localFactDataSource.saveFact(newFact.fact, newFact.length)
+        val savedFact = localFactDataSource.saveFact(newFact.fact)
         return savedFact.toFact()
     }
 }

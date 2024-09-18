@@ -5,9 +5,8 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = FactDbEntity.TABLE_NAME)
 data class FactDbEntity(
-    @PrimaryKey(autoGenerate = true) val id: Int,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val fact: String,
-    val length: Int
 ) {
     companion object {
         const val TABLE_NAME = "facts"

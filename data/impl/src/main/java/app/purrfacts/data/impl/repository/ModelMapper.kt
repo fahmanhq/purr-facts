@@ -7,5 +7,4 @@ fun FactDbEntity.toFact(): Fact =
     Fact(
         id = id,
         fact = fact,
-        length = length
     )

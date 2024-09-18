@@ -13,13 +13,11 @@ class DefaultLocalFactDataSource @Inject constructor(
         return withContext(Dispatchers.IO) { factDao.getLastSavedFact() }
     }
 
-    override suspend fun saveFact(fact: String, length: Int): FactDbEntity {
+    override suspend fun saveFact(fact: String): FactDbEntity {
         return withContext(Dispatchers.IO) {
             factDao.insertFact(
                 FactDbEntity(
-                    fact = fact,
-                    length = length,
-                    id = 0
+                    fact = fact
                 )
             )
             factDao.getLastSavedFact()!!
