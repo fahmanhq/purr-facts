@@ -1,4 +1,4 @@
-package app.purrfacts.data.impl
+package app.purrfacts.core.common
 
 import org.junit.Test
 

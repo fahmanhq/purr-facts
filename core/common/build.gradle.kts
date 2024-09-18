@@ -1,10 +1,13 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    alias(libs.plugins.hilt.android)
+    kotlin("kapt")
 }
 
 android {
-    namespace = "app.purrfacts.core.testing"
+    namespace = "app.purrfacts.core.common"
     compileSdk = 34
 
     defaultConfig {
@@ -33,8 +36,7 @@ android {
 }
 
 dependencies {
-    api(libs.junit)
-    api(libs.mockk)
-    api(libs.kotlinx.coroutines.test)
-    api("com.google.truth:truth:1.4.4")
+    // Hilt
+    implementation(libs.hilt)
+    kapt(libs.hilt.android.compiler)
 }

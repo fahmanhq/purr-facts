@@ -39,6 +39,7 @@ android {
 }
 
 dependencies {
+    implementation(project(":core:common"))
     implementation(project(":data:api"))
     implementation(project(":database"))
     implementation(project(":network"))
@@ -47,6 +48,5 @@ dependencies {
     implementation(libs.hilt)
     kapt(libs.hilt.android.compiler)
 
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
+    testImplementation(project(":core:testing"))
 }
