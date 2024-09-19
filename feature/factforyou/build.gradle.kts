@@ -54,7 +54,6 @@ dependencies {
     implementation(project(":core:ui"))
     implementation(project(":data:api"))
 
-
     // Hilt
     implementation(libs.hilt)
     implementation(libs.androidx.hilt.navigation.compose)
@@ -72,8 +71,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
 
-    testImplementation(libs.junit)
-
+    testImplementation(project(":core:testing"))
     androidTestImplementation(project(":core:testing-android"))
 
     debugImplementation(libs.androidx.ui.tooling)

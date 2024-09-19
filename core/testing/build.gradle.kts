@@ -36,5 +36,5 @@ dependencies {
     api(libs.junit)
     api(libs.mockk)
     api(libs.kotlinx.coroutines.test)
-    api("com.google.truth:truth:1.4.4")
+    api(libs.truth)
 }

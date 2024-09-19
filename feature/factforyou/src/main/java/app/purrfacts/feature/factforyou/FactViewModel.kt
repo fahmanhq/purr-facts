@@ -1,5 +1,6 @@
 package app.purrfacts.feature.factforyou
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -19,32 +20,31 @@ class FactViewModel @Inject constructor(
     private val factRepository: FactRepository
 ) : ViewModel() {
 
+    var isInit = true
+        @VisibleForTesting set
+
     var uiState by mutableStateOf<Result<FactUiState>>(Result.Loading)
         private set
 
-    init {
-        loadStartingFact()
-    }
+    fun loadStartingFact() {
+        if (isInit) {
+            viewModelScope.launch {
+                runCatching {
+                    uiState = Result.Loading
 
-    private fun loadStartingFact() {
-        viewModelScope.launch {
-            runCatching {
-                uiState = Result.Loading
-
-                val lastSavedFact = factRepository.getLastSavedFact()
-                uiState = lastSavedFact.fact.let {
-                    Result.Success(
-                        FactUiState(
-                            fact = it,
-                            containsCats = it.contains(CATS_KEYWORD, ignoreCase = true),
-                            isLongFact = it.length > LONG_FACT_THRESHOLD
+                    val lastSavedFact = factRepository.getLastSavedFact()
+                    uiState = lastSavedFact.fact.let {
+                        Result.Success(
+                            createFactUiState(it)
                         )
-                    )
+                    }
+                }.onFailure {
+                    uiState = Result.Error(it)
+                    it.printStackTrace()
                 }
-            }.onFailure {
-                uiState = Result.Error(it)
-                it.printStackTrace()
             }
+
+            isInit = false
         }
     }
 
@@ -56,11 +56,7 @@ class FactViewModel @Inject constructor(
                 val newFact = factRepository.getNewFact()
                 uiState = newFact.fact.let {
                     Result.Success(
-                        FactUiState(
-                            fact = it,
-                            containsCats = it.contains(CATS_KEYWORD, ignoreCase = true),
-                            isLongFact = it.length > LONG_FACT_THRESHOLD
-                        )
+                        createFactUiState(it)
                     )
                 }
             }.onFailure {
@@ -69,6 +65,13 @@ class FactViewModel @Inject constructor(
             }
         }
     }
+
+    @VisibleForTesting
+    internal fun createFactUiState(fact: String) = FactUiState(
+        fact = fact,
+        containsCats = fact.contains(CATS_KEYWORD, ignoreCase = true),
+        isLongFact = fact.length > LONG_FACT_THRESHOLD
+    )
 
     data class FactUiState(
         val fact: String,
