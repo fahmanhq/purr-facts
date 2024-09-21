@@ -17,6 +17,9 @@ import retrofit2.Retrofit
 internal object NetworkModule {
 
     private const val API_BASE_URL = "https://catfact.ninja/"
+    private val jsonConfiguration = Json {
+        ignoreUnknownKeys = true
+    }
 
     @Provides
     fun provideOkHttp(): OkHttpClient =
@@ -38,7 +41,7 @@ internal object NetworkModule {
             .client(okHttpClient)
             .baseUrl(API_BASE_URL)
             .addConverterFactory(
-                Json.asConverterFactory(
+                jsonConfiguration.asConverterFactory(
                     "application/json; charset=UTF8".toMediaType()
                 )
             )
