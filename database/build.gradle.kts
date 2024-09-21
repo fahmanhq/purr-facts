@@ -42,7 +42,7 @@ dependencies {
 
     // Local Database (Room)
     implementation(libs.room.runtime)
-    implementation(libs.room.ktx)
+    api(libs.room.ktx)
     ksp(libs.room.compiler)
 
     implementation(libs.androidx.core.ktx)

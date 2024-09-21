@@ -34,6 +34,7 @@ android {
 dependencies {
     api(libs.androidx.junit)
     api(libs.androidx.espresso.core)
+    api(libs.truth)
 
     implementation(platform(libs.androidx.compose.bom))
     api(libs.androidx.ui.test.junit4)
