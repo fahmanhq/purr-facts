@@ -2,6 +2,7 @@ package app.purrfacts.data.impl.datasource.local
 
 import app.purrfacts.core.common.di.AppDispatchers
 import app.purrfacts.core.common.di.Dispatcher
+import app.purrfacts.data.api.datasource.LocalFactDataSource
 import app.purrfacts.database.dao.FactDao
 import app.purrfacts.database.model.FactDbEntity
 import kotlinx.coroutines.CoroutineDispatcher

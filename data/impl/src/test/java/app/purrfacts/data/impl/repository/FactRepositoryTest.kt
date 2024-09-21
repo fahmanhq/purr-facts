@@ -1,8 +1,8 @@
 package app.purrfacts.data.impl.repository
 
-import app.purrfacts.data.api.FactRepository
-import app.purrfacts.data.impl.datasource.local.LocalFactDataSource
-import app.purrfacts.data.impl.datasource.remote.RemoteFactDataSource
+import app.purrfacts.data.api.datasource.LocalFactDataSource
+import app.purrfacts.data.api.datasource.RemoteFactDataSource
+import app.purrfacts.data.api.repository.FactRepository
 import app.purrfacts.database.model.FactDbEntity
 import app.purrfacts.network.model.FactResponse
 import com.google.common.truth.Truth.assertThat

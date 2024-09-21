@@ -1,6 +1,7 @@
-package app.purrfacts.data.impl.repository
+package labs.fhq.nativeapp.impl.wiring
 
-import app.purrfacts.data.api.FactRepository
+import app.purrfacts.data.api.repository.FactRepository
+import app.purrfacts.data.impl.repository.DefaultFactRepository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

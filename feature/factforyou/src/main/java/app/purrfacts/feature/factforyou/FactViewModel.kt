@@ -7,7 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.purrfacts.core.ui.Result
-import app.purrfacts.data.api.FactRepository
+import app.purrfacts.data.api.repository.FactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject

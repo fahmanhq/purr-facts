@@ -1,9 +1,9 @@
 package app.purrfacts.data.impl.repository
 
-import app.purrfacts.data.api.FactRepository
+import app.purrfacts.data.api.datasource.LocalFactDataSource
+import app.purrfacts.data.api.datasource.RemoteFactDataSource
 import app.purrfacts.data.api.model.Fact
-import app.purrfacts.data.impl.datasource.local.LocalFactDataSource
-import app.purrfacts.data.impl.datasource.remote.RemoteFactDataSource
+import app.purrfacts.data.api.repository.FactRepository
 import javax.inject.Inject
 
 class DefaultFactRepository @Inject constructor(

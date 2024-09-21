@@ -1,13 +1,10 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
-
-    alias(libs.plugins.hilt.android)
-    kotlin("kapt")
 }
 
 android {
-    namespace = "app.purrfacts.data.impl"
+    namespace = "app.purrfacts.data.testing"
     compileSdk = 34
 
     defaultConfig {
@@ -33,23 +30,11 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    kapt {
-        correctErrorTypes = true
-    }
 }
 
 dependencies {
-    api(project(":data:api"))
-
     implementation(project(":core:common"))
+    implementation(project(":data:api"))
     implementation(project(":database"))
     implementation(project(":network"))
-
-    // Hilt
-    implementation(libs.hilt)
-    kapt(libs.hilt.android.compiler)
-
-    testImplementation(project(":core:testing"))
-    testImplementation(project(":data:testing"))
-    androidTestImplementation(project(":core:testing-android"))
 }

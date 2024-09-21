@@ -1,4 +1,4 @@
-package app.purrfacts.data.impl.datasource.local
+package app.purrfacts.data.api.datasource
 
 import app.purrfacts.database.model.FactDbEntity
 

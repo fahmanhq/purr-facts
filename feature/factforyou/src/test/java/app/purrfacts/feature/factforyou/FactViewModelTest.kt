@@ -2,8 +2,8 @@ package app.purrfacts.feature.factforyou
 
 import app.purrfacts.core.testing.MainDispatcherRule
 import app.purrfacts.core.ui.Result
-import app.purrfacts.data.api.FactRepository
 import app.purrfacts.data.api.model.Fact
+import app.purrfacts.data.api.repository.FactRepository
 import com.google.common.truth.Truth.assertThat
 import io.mockk.coEvery
 import io.mockk.coVerify

@@ -1,9 +1,9 @@
-package app.purrfacts.data.impl.datasource
+package labs.fhq.nativeapp.impl.wiring
 
+import app.purrfacts.data.api.datasource.LocalFactDataSource
+import app.purrfacts.data.api.datasource.RemoteFactDataSource
 import app.purrfacts.data.impl.datasource.local.DefaultLocalFactDataSource
-import app.purrfacts.data.impl.datasource.local.LocalFactDataSource
 import app.purrfacts.data.impl.datasource.remote.DefaultRemoteFactDataSource
-import app.purrfacts.data.impl.datasource.remote.RemoteFactDataSource
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn

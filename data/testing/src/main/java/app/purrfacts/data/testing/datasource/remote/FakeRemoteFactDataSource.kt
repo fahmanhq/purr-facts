@@ -1,5 +1,6 @@
-package app.purrfacts.data.impl.datasource.remote
+package app.purrfacts.data.testing.datasource.remote
 
+import app.purrfacts.data.api.datasource.RemoteFactDataSource
 import app.purrfacts.network.model.FactResponse
 
 private val randomFactsResponse = listOf(

@@ -1,4 +1,4 @@
-package app.purrfacts.data.api
+package app.purrfacts.data.api.repository
 
 import app.purrfacts.data.api.model.Fact
 

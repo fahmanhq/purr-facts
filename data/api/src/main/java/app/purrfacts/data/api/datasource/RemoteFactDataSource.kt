@@ -1,4 +1,4 @@
-package app.purrfacts.data.impl.datasource.remote
+package app.purrfacts.data.api.datasource
 
 import app.purrfacts.network.model.FactResponse
 

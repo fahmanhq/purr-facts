@@ -1,5 +1,6 @@
-package app.purrfacts.data.impl.datasource.local
+package app.purrfacts.data.testing.datasource.local
 
+import app.purrfacts.data.api.datasource.LocalFactDataSource
 import app.purrfacts.database.model.FactDbEntity
 
 class FakeLocalFactDataSource(

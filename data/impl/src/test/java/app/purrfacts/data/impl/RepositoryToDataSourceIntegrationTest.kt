@@ -1,11 +1,11 @@
 package app.purrfacts.data.impl
 
-import app.purrfacts.data.api.FactRepository
-import app.purrfacts.data.impl.datasource.local.FakeLocalFactDataSource
-import app.purrfacts.data.impl.datasource.local.LocalFactDataSource
-import app.purrfacts.data.impl.datasource.remote.FakeRemoteFactDataSource
-import app.purrfacts.data.impl.datasource.remote.RemoteFactDataSource
+import app.purrfacts.data.api.datasource.LocalFactDataSource
+import app.purrfacts.data.api.datasource.RemoteFactDataSource
+import app.purrfacts.data.api.repository.FactRepository
 import app.purrfacts.data.impl.repository.DefaultFactRepository
+import app.purrfacts.data.testing.datasource.local.FakeLocalFactDataSource
+import app.purrfacts.data.testing.datasource.remote.FakeRemoteFactDataSource
 import com.google.common.truth.Truth.assertThat
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -20,7 +20,8 @@ class RepositoryToDataSourceIntegrationTest {
     @Before
     fun setup() {
         localFactDataSource = FakeLocalFactDataSource()
-        remoteFactDataSource = FakeRemoteFactDataSource()
+        remoteFactDataSource =
+            FakeRemoteFactDataSource()
         repository = DefaultFactRepository(localFactDataSource, remoteFactDataSource)
     }
 

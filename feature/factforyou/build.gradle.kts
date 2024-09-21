@@ -72,6 +72,9 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 
     testImplementation(project(":core:testing"))
+    testImplementation(project(":data:testing"))
+    testImplementation(libs.hilt.android.testing)
+    kaptTest(libs.hilt.android.compiler)
     androidTestImplementation(project(":core:testing-android"))
 
     debugImplementation(libs.androidx.ui.tooling)

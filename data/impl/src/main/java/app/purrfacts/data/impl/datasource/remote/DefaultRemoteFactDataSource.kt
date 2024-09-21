@@ -1,5 +1,6 @@
 package app.purrfacts.data.impl.datasource.remote
 
+import app.purrfacts.data.api.datasource.RemoteFactDataSource
 import app.purrfacts.network.model.FactResponse
 import app.purrfacts.network.serviceapi.FactService
 import javax.inject.Inject

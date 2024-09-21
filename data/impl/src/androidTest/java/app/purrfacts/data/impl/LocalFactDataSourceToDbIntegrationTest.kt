@@ -2,8 +2,8 @@ package app.purrfacts.data.impl
 
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import app.purrfacts.data.api.datasource.LocalFactDataSource
 import app.purrfacts.data.impl.datasource.local.DefaultLocalFactDataSource
-import app.purrfacts.data.impl.datasource.local.LocalFactDataSource
 import app.purrfacts.database.PurrFactsDb
 import app.purrfacts.database.dao.FactDao
 import app.purrfacts.database.model.FactDbEntity
