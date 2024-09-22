@@ -23,7 +23,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
@@ -36,9 +38,10 @@ import app.purrfacts.core.ui.component.LoadingIndicator
 import app.purrfacts.core.ui.ext.testTag
 
 @VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
-internal enum class FactScreenTestTags {
+enum class FactScreenTestTags {
     MULTIPLE_CATS_INDICATOR,
-    FACT_LENGTH_INDICATOR
+    FACT_LENGTH_INDICATOR,
+    FACT_TEXT
 }
 
 @Composable
@@ -82,6 +85,7 @@ private fun FactScreenContent(
 ) {
     val isMultipleCatsFactNoteVisible = factUiState.containsCats
     val displayedFact = factUiState.fact
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -119,6 +123,7 @@ private fun FactScreenContent(
         Spacer(modifier = Modifier.height(32.dp))
 
         Text(
+            modifier = Modifier.testTag(FactScreenTestTags.FACT_TEXT),
             text = displayedFact,
             style = MaterialTheme.typography.bodyLarge
         )
@@ -139,7 +144,7 @@ private fun FactScreenContent(
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .semantics {
-
+                    contentDescription = context.getString(R.string.update_fact_btn_label)
                 },
             onClick = onUpdateFactBtnClicked
         ) {

@@ -19,13 +19,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.testTag
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import app.purrfacts.core.ui.AppTheme
 import app.purrfacts.core.ui.ColorPalette
+import app.purrfacts.core.ui.R
+import app.purrfacts.core.ui.ext.testTag
 
 @Composable
 fun ErrorIndicator(
@@ -37,7 +39,7 @@ fun ErrorIndicator(
     Column(
         modifier = modifier
             .padding(16.dp)
-            .testTag("ErrorIndicator"),
+            .testTag(CommonComponentTestTags.ERROR_INDICATOR),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -48,7 +50,7 @@ fun ErrorIndicator(
         )
         Spacer(modifier = Modifier.size(16.dp))
         Text(
-            text = "Error Occurred",
+            text = stringResource(R.string.error_occurred),
             style = MaterialTheme.typography.titleLarge,
             color = ColorPalette.RedMain
         )
@@ -68,7 +70,7 @@ fun ErrorIndicator(
             Button(
                 content = {
                     Text(
-                        text = "Retry",
+                        text = stringResource(R.string.retry),
                         style = MaterialTheme.typography.bodyLarge,
                     )
                 },

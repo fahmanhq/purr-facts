@@ -36,6 +36,8 @@ dependencies {
     api(libs.androidx.espresso.core)
     api(libs.truth)
 
+    api(libs.hilt.android.testing)
+
     implementation(platform(libs.androidx.compose.bom))
     api(libs.androidx.ui.test.junit4)
     api(libs.androidx.ui.test.android)

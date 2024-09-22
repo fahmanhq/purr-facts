@@ -76,6 +76,7 @@ dependencies {
     testImplementation(libs.hilt.android.testing)
     kaptTest(libs.hilt.android.compiler)
     androidTestImplementation(project(":core:testing-android"))
+    androidTestImplementation(project(":data:testing"))
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

@@ -19,7 +19,7 @@ private const val LONG_FACT_THRESHOLD = 100
 
 @MediumTest
 @RunWith(AndroidJUnit4::class)
-class FactForYouScreenTest {
+class FactScreenTest {
 
     @get:Rule
     val composeTestRule = createComposeRule()
@@ -80,6 +80,27 @@ class FactForYouScreenTest {
         composeTestRule
             .onNodeWithTag(FactScreenTestTags.FACT_LENGTH_INDICATOR)
             .assertIsNotDisplayed()
+    }
+
+    @Test
+    fun loadingIndicatorIsDisplayed_whenFactIsLoading() {
+
+    }
+
+    @Test
+    fun loadingIndicatorIsHidden_whenFactIsNotLoading() {
+    }
+
+    @Test
+    fun errorIndicatorIsDisplayed_whenFactIsError() {
+    }
+
+    @Test
+    fun errorIndicatorIsHidden_whenFactIsNotError() {
+    }
+
+    @Test
+    fun onUpdateFactBtnClickedCallbackIsCalled_whenUpdateFactBtnClicked() {
     }
 
     private fun setupContentToTest(fact: String) {

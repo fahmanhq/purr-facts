@@ -24,7 +24,7 @@ class FactViewModel @Inject constructor(
         @VisibleForTesting set
 
     var uiState by mutableStateOf<Result<FactUiState>>(Result.Loading)
-        private set
+        @VisibleForTesting set
 
     fun loadStartingFact() {
         if (isInit) {

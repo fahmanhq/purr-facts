@@ -18,7 +18,7 @@ android {
         versionCode = 1
         versionName = "0.0.1"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "app.purrfacts.core.testing.android.TestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -87,6 +87,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    androidTestImplementation(project(":core:testing-android"))
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
