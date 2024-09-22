@@ -5,12 +5,16 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import app.purrfacts.core.testing.android.onNodeWithTag
 import app.purrfacts.core.ui.Result
+import app.purrfacts.core.ui.component.CommonComponentTestTags
+import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -84,26 +88,67 @@ class FactScreenTest {
 
     @Test
     fun loadingIndicatorIsDisplayed_whenFactIsLoading() {
+        composeTestRule.setContent {
+            FactScreen(
+                factUiState = Result.Loading,
+                onUpdateFactBtnClicked = {}
+            )
+        }
 
+        composeTestRule.onNodeWithTag(CommonComponentTestTags.LOADING_INDICATOR)
+            .assertIsDisplayed()
     }
 
     @Test
     fun loadingIndicatorIsHidden_whenFactIsNotLoading() {
+        setupContentToTest("Some Fact")
+
+        composeTestRule.onNodeWithTag(CommonComponentTestTags.LOADING_INDICATOR)
+            .assertIsNotDisplayed()
     }
 
     @Test
     fun errorIndicatorIsDisplayed_whenFactIsError() {
+        val sampleError = Exception("Sample error")
+        composeTestRule.setContent {
+            FactScreen(
+                factUiState = Result.Error(sampleError),
+                onUpdateFactBtnClicked = {}
+            )
+        }
+
+        composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(sampleError.message!!)
+            .assertIsDisplayed()
     }
 
     @Test
     fun errorIndicatorIsHidden_whenFactIsNotError() {
+        setupContentToTest("Some Fact")
+
+        composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
+            .assertIsNotDisplayed()
     }
 
     @Test
     fun onUpdateFactBtnClickedCallbackIsCalled_whenUpdateFactBtnClicked() {
+        var callbackCalled = false
+
+        setupContentToTest("Some Fact") {
+            callbackCalled = true
+        }
+
+        composeTestRule
+            .onNodeWithContentDescription(
+                appContext.getString(R.string.update_fact_btn_label)
+            )
+            .performClick()
+
+        assertThat(callbackCalled).isTrue()
     }
 
-    private fun setupContentToTest(fact: String) {
+    private fun setupContentToTest(fact: String, onUpdateFactBtnClicked: () -> Unit = {}) {
         composeTestRule.setContent {
             FactScreen(
                 factUiState = Result.Success(
@@ -113,7 +158,7 @@ class FactScreenTest {
                         isLongFact = fact.length.toLong() > LONG_FACT_THRESHOLD
                     )
                 ),
-                onUpdateFactBtnClicked = {}
+                onUpdateFactBtnClicked = onUpdateFactBtnClicked
             )
         }
     }
