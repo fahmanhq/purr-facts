@@ -15,10 +15,14 @@ dependencyResolutionManagement {
 rootProject.name = "purr-facts"
 
 include(":app")
-include(":domain")
 include(":database")
 include(":data:api")
 include(":data:impl")
 include(":network")
 include(":core:ui")
 include(":feature:factforyou")
+include(":core:testing")
+include(":core:testing-android")
+include(":core:common")
+include(":data:testing")
+include(":data:impl-wiring")

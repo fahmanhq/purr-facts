@@ -1,57 +1,154 @@
 package app.purrfacts.feature.factforyou
 
+import androidx.annotation.VisibleForTesting
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.scaleIn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
-import app.purrfacts.core.ui.EdisonAndroidExerciseTheme
+import androidx.hilt.navigation.compose.hiltViewModel
+import app.purrfacts.core.ui.AppTheme
+import app.purrfacts.core.ui.Result
+import app.purrfacts.core.ui.component.ErrorIndicator
+import app.purrfacts.core.ui.component.LoadingIndicator
+import app.purrfacts.core.ui.ext.testTag
+
+@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+enum class FactScreenTestTags {
+    MULTIPLE_CATS_INDICATOR,
+    FACT_LENGTH_INDICATOR,
+    FACT_TEXT
+}
 
 @Composable
-fun FactScreen(
-    viewModel: FactViewModel
+internal fun FactScreen(
+    viewModel: FactViewModel = hiltViewModel()
 ) {
+    LaunchedEffect(true) {
+        viewModel.loadStartingFact()
+    }
+
+    FactScreen(
+        factUiState = viewModel.uiState,
+        onUpdateFactBtnClicked = {
+            viewModel.updateFact()
+        }
+    )
+}
+
+@Composable
+internal fun FactScreen(
+    factUiState: Result<FactViewModel.FactUiState>,
+    onUpdateFactBtnClicked: () -> Unit,
+) {
+    when (factUiState) {
+        Result.Loading -> LoadingIndicator()
+        is Result.Success -> FactScreenContent(factUiState.data, onUpdateFactBtnClicked)
+        is Result.Error -> ErrorIndicator(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Color(0x88FFFFFF)),
+            customMessage = factUiState.exception.message,
+            retryAllowed = true
+        ) {}
+    }
+}
+
+@Composable
+private fun FactScreenContent(
+    factUiState: FactViewModel.FactUiState,
+    onUpdateFactBtnClicked: () -> Unit
+) {
+    val isMultipleCatsFactNoteVisible = factUiState.containsCats
+    val displayedFact = factUiState.fact
+    val context = LocalContext.current
+
     Column(
         modifier = Modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
             .padding(16.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(
-            space = 16.dp,
-            alignment = Alignment.CenterVertically
-        )
+        verticalArrangement = Arrangement.Center
     ) {
-        var fact by remember { mutableStateOf("") }
+        Row(
+            verticalAlignment = Alignment.Bottom,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            Text(
+                text = stringResource(R.string.fact_for_you_title),
+                style = MaterialTheme.typography.titleLarge
+            )
+            AnimatedVisibility(
+                visible = isMultipleCatsFactNoteVisible,
+                enter = fadeIn() + expandHorizontally() + scaleIn()
+            ) {
+                Text(
+                    modifier = Modifier
+                        .padding(start = 8.dp)
+                        .graphicsLayer(rotationZ = 10f)
+                        .background(Color.Red, shape = RoundedCornerShape(8.dp))
+                        .padding(8.dp)
+                        .testTag(FactScreenTestTags.MULTIPLE_CATS_INDICATOR),
+                    text = stringResource(R.string.multiple_cats_indicator_label),
+                    style = MaterialTheme.typography.titleSmall,
+                    color = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(32.dp))
 
         Text(
-            text = "Fact",
-            style = MaterialTheme.typography.titleLarge
-        )
-
-        Text(
-            text = fact,
+            modifier = Modifier.testTag(FactScreenTestTags.FACT_TEXT),
+            text = displayedFact,
             style = MaterialTheme.typography.bodyLarge
         )
 
-        val onClick = {
-            fact = viewModel.updateFact { print("done") }
+        AnimatedVisibility(visible = factUiState.isLongFact) {
+            Text(
+                text = stringResource(R.string.length_indicator_template, factUiState.fact.length),
+                style = MaterialTheme.typography.bodySmall,
+                modifier = Modifier
+                    .align(Alignment.End)
+                    .padding(top = 8.dp)
+                    .testTag(FactScreenTestTags.FACT_LENGTH_INDICATOR)
+            )
         }
+        Spacer(modifier = Modifier.height(24.dp))
 
-        Button(onClick = onClick) {
-            Text(text = "Update fact")
+        Button(
+            modifier = Modifier
+                .align(Alignment.CenterHorizontally)
+                .semantics {
+                    contentDescription = context.getString(R.string.update_fact_btn_label)
+                },
+            onClick = onUpdateFactBtnClicked
+        ) {
+            Text(text = stringResource(R.string.update_fact_btn_label))
         }
     }
 }
@@ -59,7 +156,27 @@ fun FactScreen(
 @Preview
 @Composable
 private fun FactScreenPreview() {
-    EdisonAndroidExerciseTheme {
-        FactScreen(viewModel = FactViewModel())
+    AppTheme {
+        FactScreen(
+            factUiState = Result.Success(
+                FactViewModel.FactUiState(
+                    fact = "This is a fact for multiple cats.\n${LoremIpsum(10).values.first()}",
+                    containsCats = true,
+                    isLongFact = true,
+                )
+            ),
+            onUpdateFactBtnClicked = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FactScreenOnLoadingStatePreview() {
+    AppTheme {
+        FactScreen(
+            factUiState = Result.Loading,
+            onUpdateFactBtnClicked = {}
+        )
     }
 }

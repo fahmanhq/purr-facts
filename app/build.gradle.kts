@@ -2,6 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.jetbrains.kotlin.android)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.jetbrains.kotlin.serialization)
 
     kotlin("kapt")
 }
@@ -17,7 +18,7 @@ android {
         versionCode = 1
         versionName = "0.0.1"
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner = "app.purrfacts.core.testing.android.TestRunner"
         vectorDrawables {
             useSupportLibrary = true
         }
@@ -57,7 +58,12 @@ android {
 
 dependencies {
     implementation(project(":core:ui"))
+
+    // Feature Modules
     implementation(project(":feature:factforyou"))
+
+    // DI Wiring
+    implementation(project(":data:impl-wiring"))
 
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.core.ktx)
@@ -69,6 +75,9 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
 
+    implementation(libs.androidx.navigation.compose)
+    implementation(libs.kotlinx.serialization.json)
+
     // Hilt
     implementation(libs.hilt)
     kapt(libs.hilt.android.compiler)
@@ -78,6 +87,8 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
+
+    androidTestImplementation(project(":core:testing-android"))
 
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)

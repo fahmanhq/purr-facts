@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+    alias(libs.plugins.hilt.android)
+    kotlin("kapt")
+    alias(libs.plugins.ksp)
 }
 
 android {
@@ -33,6 +36,14 @@ android {
 }
 
 dependencies {
+    // Hilt
+    implementation(libs.hilt)
+    kapt(libs.hilt.android.compiler)
+
+    // Local Database (Room)
+    implementation(libs.room.runtime)
+    api(libs.room.ktx)
+    ksp(libs.room.compiler)
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)

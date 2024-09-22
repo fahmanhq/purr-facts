@@ -1,6 +1,9 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    alias(libs.plugins.hilt.android)
+    kotlin("kapt")
 }
 
 android {
@@ -30,14 +33,23 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    kapt {
+        correctErrorTypes = true
+    }
 }
 
 dependencies {
+    api(project(":data:api"))
 
-    implementation(libs.androidx.core.ktx)
-    implementation(libs.androidx.appcompat)
-    implementation(libs.material)
-    testImplementation(libs.junit)
-    androidTestImplementation(libs.androidx.junit)
-    androidTestImplementation(libs.androidx.espresso.core)
+    implementation(project(":core:common"))
+    implementation(project(":database"))
+    implementation(project(":network"))
+
+    // Hilt
+    implementation(libs.hilt)
+    kapt(libs.hilt.android.compiler)
+
+    testImplementation(project(":core:testing"))
+    testImplementation(project(":data:testing"))
+    androidTestImplementation(project(":core:testing-android"))
 }
