@@ -10,7 +10,6 @@ android {
     defaultConfig {
         minSdk = 24
 
-        testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -21,13 +20,6 @@ android {
 
     kotlinOptions {
         jvmTarget = "1.8"
-    }
-
-    sourceSets {
-        getByName("main") {
-            java.srcDirs()
-            res.srcDirs()
-        }
     }
 }
 
