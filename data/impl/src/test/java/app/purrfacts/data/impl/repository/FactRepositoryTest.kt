@@ -78,4 +78,18 @@ class FactRepositoryTest {
 
         assertThat(actualFact).isEqualTo(savedFact.toFact())
     }
+
+    @Test
+    fun `getAllSavedFacts should return all saved facts`() = runTest {
+        val savedFacts = listOf(
+            FactDbEntity(id = 1, fact = "Fact 1"),
+            FactDbEntity(id = 2, fact = "Fact 2"),
+        )
+        coEvery { localFactDataSource.getAllSavedFacts() } returns savedFacts
+
+        val actualFacts = sut.getAllSavedFacts()
+
+        coVerify { localFactDataSource.getAllSavedFacts() }
+        assertThat(actualFacts).containsExactlyElementsIn(savedFacts.map { it.toFact() })
+    }
 }

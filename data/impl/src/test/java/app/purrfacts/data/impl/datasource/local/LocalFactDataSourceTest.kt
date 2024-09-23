@@ -46,4 +46,10 @@ class LocalFactDataSourceTest {
             assertThat(savedDbEntity.captured.fact).isEqualTo(factToSave)
             coVerify { factDao.getLastSavedFact() }
         }
+
+    @Test
+    fun `getAllSavedFacts should call factDao getAllFacts`() = runTest {
+        sut.getAllSavedFacts()
+        coVerify { factDao.getAllFacts() }
+    }
 }
