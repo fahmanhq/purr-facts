@@ -9,7 +9,6 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import app.purrfacts.core.testing.android.onNodeWithTag
 import app.purrfacts.core.ui.Result
@@ -21,7 +20,6 @@ import org.junit.runner.RunWith
 
 private const val LONG_FACT_THRESHOLD = 100
 
-@MediumTest
 @RunWith(AndroidJUnit4::class)
 class FactScreenTest {
 

@@ -6,7 +6,6 @@ import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import app.purrfacts.core.testing.android.onNodeWithTag
 import app.purrfacts.core.ui.Result
@@ -16,7 +15,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
-@MediumTest
 @RunWith(AndroidJUnit4::class)
 class FactHistoryScreenTest {
 
