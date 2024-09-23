@@ -37,7 +37,7 @@ import app.purrfacts.core.ui.component.ErrorIndicator
 import app.purrfacts.core.ui.component.LoadingIndicator
 import app.purrfacts.core.ui.ext.testTag
 
-@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+@VisibleForTesting
 enum class FactScreenTestTags {
     MULTIPLE_CATS_INDICATOR,
     FACT_LENGTH_INDICATOR,
