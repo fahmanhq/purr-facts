@@ -30,6 +30,6 @@ class DefaultLocalFactDataSource @Inject constructor(
     }
 
     override suspend fun getAllSavedFacts(): List<FactDbEntity> {
-        return withContext(Dispatchers.IO) { factDao.getAllFacts() }
+        return withContext(ioDispatcher) { factDao.getAllFacts() }
     }
 }

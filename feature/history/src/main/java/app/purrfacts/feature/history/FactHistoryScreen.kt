@@ -65,10 +65,12 @@ private fun FactHistoryScreenContent(data: List<Fact>) {
 private fun FactHistoryItem(fact: Fact) {
     Card {
         Column(
-            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 8.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 12.dp, vertical = 8.dp)
         ) {
             Text(text = fact.fact, style = AppTheme.typography.titleMedium)
-            Text(text = "Length: ${fact.length}", style = AppTheme.typography.bodySmall)
+            Text(text = "Length: ${fact.fact.length}", style = AppTheme.typography.bodySmall)
         }
     }
 }
@@ -80,8 +82,8 @@ private fun FactHistoryScreenPreview() {
         FactHistoryScreen(
             uiState = Result.Success(
                 listOf(
-                    Fact(id = 8028, fact = "neglegentur", length = 11),
-                    Fact(id = 5179, fact = "appetere", length = 8)
+                    Fact(id = 8028, fact = "neglegentur"),
+                    Fact(id = 5179, fact = "appetere")
                 )
             )
         )

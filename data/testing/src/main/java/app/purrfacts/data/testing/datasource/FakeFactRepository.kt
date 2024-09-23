@@ -28,6 +28,10 @@ class FakeFactRepository : FactRepository {
         return fact
     }
 
+    override suspend fun getAllSavedFacts(): List<Fact> {
+        return savedFact
+    }
+
     private fun getRandomFact(): Fact {
         return facts[idx++ % facts.size]
     }
