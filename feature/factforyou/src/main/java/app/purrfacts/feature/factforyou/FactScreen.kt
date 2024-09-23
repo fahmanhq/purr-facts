@@ -48,7 +48,7 @@ enum class FactScreenTestTags {
 internal fun FactScreen(
     viewModel: FactViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         viewModel.loadStartingFact()
     }
 

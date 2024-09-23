@@ -1,5 +1,6 @@
 package app.purrfacts.feature.history
 
+import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -17,24 +18,27 @@ class FactHistoryViewModel @Inject constructor(
     private val factRepository: FactRepository
 ) : ViewModel() {
 
+    var isInit = true
+        @VisibleForTesting set
+
     var uiState by mutableStateOf<Result<List<Fact>>>(Result.Loading)
-        private set
+        @VisibleForTesting set
 
-    init {
-        loadStartingFact()
-    }
-
-    private fun loadStartingFact() {
-        viewModelScope.launch {
-            runCatching {
-                uiState = Result.Loading
-                uiState = Result.Success(
-                    factRepository.getAllSavedFacts()
-                )
-            }.onFailure {
-                uiState = Result.Error(it)
-                it.printStackTrace()
+    fun loadFactHistory() {
+        if (isInit) {
+            viewModelScope.launch {
+                runCatching {
+                    uiState = Result.Loading
+                    uiState = Result.Success(
+                        factRepository.getAllSavedFacts()
+                    )
+                }.onFailure {
+                    uiState = Result.Error(it)
+                    it.printStackTrace()
+                }
             }
+
+            isInit = false
         }
     }
 }
