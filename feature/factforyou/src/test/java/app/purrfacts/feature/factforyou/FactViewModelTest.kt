@@ -1,7 +1,6 @@
 package app.purrfacts.feature.factforyou
 
 import app.purrfacts.core.testing.MainDispatcherRule
-import app.purrfacts.core.ui.Result
 import app.purrfacts.data.api.model.Fact
 import app.purrfacts.data.api.repository.FactRepository
 import com.google.common.truth.Truth.assertThat
@@ -42,10 +41,10 @@ class FactViewModelTest {
         sut.loadStartingFact()
 
         coVerify { factRepository.getLastSavedFact() }
-        assertThat(sut.uiState).isInstanceOf(Result.Success::class.java)
+        assertThat(sut.uiState).isInstanceOf(FactUiState.Success::class.java)
 
-        val uiState = (sut.uiState as Result.Success).data
-        assertThat(uiState.fact).isEqualTo(savedFact.fact)
+        val factSpec = (sut.uiState as FactUiState.Success).factSpec
+        assertThat(factSpec.fact).isEqualTo(savedFact.fact)
     }
 
     @Test
@@ -67,10 +66,10 @@ class FactViewModelTest {
         sut.updateFact()
 
         coVerify { factRepository.getNewFact() }
-        assertThat(sut.uiState).isInstanceOf(Result.Success::class.java)
+        assertThat(sut.uiState).isInstanceOf(FactUiState.Success::class.java)
 
-        val uiState = (sut.uiState as Result.Success).data
-        assertThat(uiState.fact).isEqualTo(newFact.fact)
+        val factSpec = (sut.uiState as FactUiState.Success).factSpec
+        assertThat(factSpec.fact).isEqualTo(newFact.fact)
     }
 
     @Test
@@ -83,7 +82,7 @@ class FactViewModelTest {
             longFact
         }
 
-        val uiState = sut.createFactUiState(fact)
+        val uiState = sut.createFactSpec(fact)
         assertThat(uiState.fact).isEqualTo(fact)
         assertThat(uiState.containsCats).isTrue()
         assertThat(uiState.isLongFact).isTrue()

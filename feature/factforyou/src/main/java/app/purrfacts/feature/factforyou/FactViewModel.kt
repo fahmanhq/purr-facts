@@ -6,7 +6,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.purrfacts.core.ui.Result
 import app.purrfacts.data.api.repository.FactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -23,61 +22,52 @@ class FactViewModel @Inject constructor(
     var isInit = true
         @VisibleForTesting set
 
-    var uiState by mutableStateOf<Result<FactUiState>>(Result.Loading)
+    var uiState by mutableStateOf<FactUiState>(FactUiState.Loading)
         @VisibleForTesting set
 
     fun loadStartingFact() {
         if (isInit) {
             viewModelScope.launch {
                 runCatching {
-                    uiState = Result.Loading
+                    uiState = FactUiState.Loading
 
                     val lastSavedFact = factRepository.getLastSavedFact()
                     uiState = lastSavedFact.fact.let {
-                        Result.Success(
-                            createFactUiState(it)
+                        FactUiState.Success(
+                            createFactSpec(it)
                         )
                     }
+                    isInit = false
                 }.onFailure {
-                    uiState = Result.Error(it)
+                    uiState = FactUiState.Error(it)
                     it.printStackTrace()
                 }
             }
-
-            isInit = false
         }
     }
 
     fun updateFact() {
         viewModelScope.launch {
             runCatching {
-                uiState = Result.Loading
+                uiState = FactUiState.Loading
 
                 val newFact = factRepository.getNewFact()
                 uiState = newFact.fact.let {
-                    Result.Success(
-                        createFactUiState(it)
+                    FactUiState.Success(
+                        createFactSpec(it)
                     )
                 }
             }.onFailure {
-                uiState = Result.Error(it)
+                uiState = FactUiState.Error(it)
                 it.printStackTrace()
             }
         }
     }
 
     @VisibleForTesting
-    internal fun createFactUiState(fact: String) = FactUiState(
+    internal fun createFactSpec(fact: String) = FactSpec(
         fact = fact,
         containsCats = fact.contains(CATS_KEYWORD, ignoreCase = true),
         isLongFact = fact.length > LONG_FACT_THRESHOLD
     )
-
-    data class FactUiState(
-        val fact: String,
-        val containsCats: Boolean,
-        val isLongFact: Boolean
-    )
 }
-
-

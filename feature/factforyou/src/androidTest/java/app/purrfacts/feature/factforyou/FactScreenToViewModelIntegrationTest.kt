@@ -13,7 +13,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import app.purrfacts.core.testing.android.hasTestTag
 import app.purrfacts.core.testing.android.onNodeWithTag
-import app.purrfacts.core.ui.Result
 import app.purrfacts.core.ui.component.CommonComponentTestTags
 import app.purrfacts.data.testing.datasource.FakeFactRepository
 import com.google.common.truth.Truth.assertThat
@@ -46,7 +45,7 @@ class FactScreenToViewModelIntegrationTest {
 
     @Test
     fun loadingIndicatorIsDisplayed_whenUiStateIsLoading() {
-        viewModel.uiState = Result.Loading
+        viewModel.uiState = FactUiState.Loading
 
         composeTestRule
             .onNodeWithTag(CommonComponentTestTags.LOADING_INDICATOR)
@@ -56,7 +55,7 @@ class FactScreenToViewModelIntegrationTest {
     @Test
     fun errorIndicatorIsDisplayed_whenUiStateIsError() {
         val sampleException = Exception("Sample Error")
-        viewModel.uiState = Result.Error(sampleException)
+        viewModel.uiState = FactUiState.Error(sampleException)
 
         composeTestRule
             .onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
@@ -82,7 +81,7 @@ class FactScreenToViewModelIntegrationTest {
         composeTestRule.waitUntilExactlyOneExists(
             hasTestTag(FactScreenTestTags.FACT_TEXT)
         )
-        val initialFactText = (viewModel.uiState as Result.Success).data.fact
+        val initialFactText = (viewModel.uiState as FactUiState.Success).factSpec.fact
 
         val updateFactBtnContentDescription = appContext.getString(R.string.update_fact_btn_label)
         composeTestRule
@@ -92,7 +91,7 @@ class FactScreenToViewModelIntegrationTest {
         composeTestRule.waitUntilExactlyOneExists(
             hasTestTag(FactScreenTestTags.FACT_TEXT)
         )
-        val newFactText = (viewModel.uiState as Result.Success).data.fact
+        val newFactText = (viewModel.uiState as FactUiState.Success).factSpec.fact
         assertThat(newFactText).isNotEqualTo(initialFactText)
     }
 }
