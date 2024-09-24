@@ -54,4 +54,23 @@ class LocalFactDataSourceToDbIntegrationTest {
         val actualResult = factDao.getLastSavedFact()
         assertThat(actualResult).isEqualTo(savedFact)
     }
+
+    @Test
+    fun getAllSavedFacts_whenDbEmpty_shouldReturnEmptyList() = runTest {
+        val actualResult = sut.getAllSavedFacts()
+        assertThat(actualResult).isEmpty()
+    }
+
+    @Test
+    fun getAllSavedFacts_whenDbNotEmpty_shouldReturnAllSavedFacts() = runTest {
+        val fact1 = "Fact 1"
+        val fact2 = "Fact 2"
+
+        factDao.insertFact(FactDbEntity(fact = fact1))
+        factDao.insertFact(FactDbEntity(fact = fact2))
+
+        val actualResult = sut.getAllSavedFacts()
+        assertThat(actualResult).hasSize(2)
+        assertThat(actualResult.map { it.fact }).containsExactly(fact1, fact2)
+    }
 }

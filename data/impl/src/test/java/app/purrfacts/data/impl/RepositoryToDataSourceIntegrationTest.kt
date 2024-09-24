@@ -53,4 +53,17 @@ class RepositoryToDataSourceIntegrationTest {
 
         assertThat(lastSavedFact).isEqualTo(newFact)
     }
+
+    @Test
+    fun `getAllSavedFacts should return all saved facts`() = runTest {
+        val sampleFact1 = "Fact 1"
+        val sampleFact2 = "Fact 2"
+
+        localFactDataSource.saveFact(sampleFact1)
+        localFactDataSource.saveFact(sampleFact2)
+
+        val facts = repository.getAllSavedFacts()
+        assertThat(facts.map { it.fact })
+            .containsExactly(sampleFact1, sampleFact2)
+    }
 }

@@ -1,7 +1,6 @@
 package app.purrfacts.feature.factforyou
 
 import app.purrfacts.core.testing.MainDispatcherRule
-import app.purrfacts.core.ui.Result
 import app.purrfacts.data.api.model.Fact
 import app.purrfacts.data.api.repository.FactRepository
 import com.google.common.truth.Truth.assertThat
@@ -12,6 +11,7 @@ import io.mockk.junit4.MockKRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import app.purrfacts.core.ui.R as CoreUiR
 
 class FactViewModelTest {
 
@@ -32,7 +32,7 @@ class FactViewModelTest {
     }
 
     @Test
-    fun `loadStartingFact should get the last saved fact and set as new ui state`() {
+    fun `loadStartingFact should get the last saved fact, set as new ui state, and set isInit to false`() {
         val savedFact = Fact(
             id = 1,
             fact = "Last Fact"
@@ -42,10 +42,11 @@ class FactViewModelTest {
         sut.loadStartingFact()
 
         coVerify { factRepository.getLastSavedFact() }
-        assertThat(sut.uiState).isInstanceOf(Result.Success::class.java)
+        assertThat(sut.uiState).isInstanceOf(FactUiState.Success::class.java)
 
-        val uiState = (sut.uiState as Result.Success).data
-        assertThat(uiState.fact).isEqualTo(savedFact.fact)
+        val factSpec = (sut.uiState as FactUiState.Success).factSpec
+        assertThat(factSpec.fact).isEqualTo(savedFact.fact)
+        assertThat(sut.isInit).isFalse()
     }
 
     @Test
@@ -54,6 +55,17 @@ class FactViewModelTest {
 
         sut.loadStartingFact()
         coVerify(exactly = 0) { factRepository.getLastSavedFact() }
+    }
+
+    @Test
+    fun `loadStartingFact should set ui state to error if error occurred and isInit still set to true`() {
+        val sampleException = Exception("Sample error")
+        coEvery { factRepository.getLastSavedFact() } throws sampleException
+
+        sut.loadStartingFact()
+        assertThat(sut.uiState)
+            .isEqualTo(FactUiState.Error(CoreUiR.string.error_msg_unknown_issue))
+        assertThat(sut.isInit).isTrue()
     }
 
     @Test
@@ -67,10 +79,10 @@ class FactViewModelTest {
         sut.updateFact()
 
         coVerify { factRepository.getNewFact() }
-        assertThat(sut.uiState).isInstanceOf(Result.Success::class.java)
+        assertThat(sut.uiState).isInstanceOf(FactUiState.Success::class.java)
 
-        val uiState = (sut.uiState as Result.Success).data
-        assertThat(uiState.fact).isEqualTo(newFact.fact)
+        val factSpec = (sut.uiState as FactUiState.Success).factSpec
+        assertThat(factSpec.fact).isEqualTo(newFact.fact)
     }
 
     @Test
@@ -83,7 +95,7 @@ class FactViewModelTest {
             longFact
         }
 
-        val uiState = sut.createFactUiState(fact)
+        val uiState = sut.createFactSpec(fact)
         assertThat(uiState.fact).isEqualTo(fact)
         assertThat(uiState.containsCats).isTrue()
         assertThat(uiState.isLongFact).isTrue()

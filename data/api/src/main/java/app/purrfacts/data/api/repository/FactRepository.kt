@@ -6,4 +6,5 @@ interface FactRepository {
 
     suspend fun getLastSavedFact(): Fact
     suspend fun getNewFact(): Fact
+    suspend fun getAllSavedFacts(): List<Fact>
 }

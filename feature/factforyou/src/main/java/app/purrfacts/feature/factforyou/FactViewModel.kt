@@ -1,16 +1,18 @@
 package app.purrfacts.feature.factforyou
 
+import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import app.purrfacts.core.ui.Result
 import app.purrfacts.data.api.repository.FactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
+import app.purrfacts.core.ui.R as CoreUiR
 
 private const val LONG_FACT_THRESHOLD = 100
 private const val CATS_KEYWORD = "cats"
@@ -23,61 +25,67 @@ class FactViewModel @Inject constructor(
     var isInit = true
         @VisibleForTesting set
 
-    var uiState by mutableStateOf<Result<FactUiState>>(Result.Loading)
+    var uiState by mutableStateOf<FactUiState>(FactUiState.Loading)
         @VisibleForTesting set
+
+    private var thingToRetry: (() -> Unit)? = null
 
     fun loadStartingFact() {
         if (isInit) {
             viewModelScope.launch {
                 runCatching {
-                    uiState = Result.Loading
+                    uiState = FactUiState.Loading
 
                     val lastSavedFact = factRepository.getLastSavedFact()
                     uiState = lastSavedFact.fact.let {
-                        Result.Success(
-                            createFactUiState(it)
+                        FactUiState.Success(
+                            createFactSpec(it)
                         )
                     }
+                    isInit = false
                 }.onFailure {
-                    uiState = Result.Error(it)
+                    uiState = FactUiState.Error(getReadableErrorMessage(it))
+                    thingToRetry = ::loadStartingFact
                     it.printStackTrace()
                 }
             }
-
-            isInit = false
         }
     }
 
     fun updateFact() {
         viewModelScope.launch {
             runCatching {
-                uiState = Result.Loading
+                uiState = FactUiState.Loading
 
                 val newFact = factRepository.getNewFact()
                 uiState = newFact.fact.let {
-                    Result.Success(
-                        createFactUiState(it)
+                    FactUiState.Success(
+                        createFactSpec(it)
                     )
                 }
             }.onFailure {
-                uiState = Result.Error(it)
+                uiState = FactUiState.Error(getReadableErrorMessage(it))
+                thingToRetry = ::updateFact
                 it.printStackTrace()
             }
         }
     }
 
+    @StringRes
+    private fun getReadableErrorMessage(throwable: Throwable): Int = when (throwable) {
+        is IOException -> CoreUiR.string.error_msg_network_issue
+        else -> CoreUiR.string.error_msg_unknown_issue
+    }
+
     @VisibleForTesting
-    internal fun createFactUiState(fact: String) = FactUiState(
+    internal fun createFactSpec(fact: String) = FactSpec(
         fact = fact,
         containsCats = fact.contains(CATS_KEYWORD, ignoreCase = true),
         isLongFact = fact.length > LONG_FACT_THRESHOLD
     )
 
-    data class FactUiState(
-        val fact: String,
-        val containsCats: Boolean,
-        val isLongFact: Boolean
-    )
+    fun onRetryButtonClicked() {
+        thingToRetry?.invoke()
+        thingToRetry = null
+    }
 }
-
-

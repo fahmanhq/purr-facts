@@ -32,12 +32,12 @@ import androidx.compose.ui.tooling.preview.datasource.LoremIpsum
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.purrfacts.core.ui.AppTheme
-import app.purrfacts.core.ui.Result
 import app.purrfacts.core.ui.component.ErrorIndicator
 import app.purrfacts.core.ui.component.LoadingIndicator
 import app.purrfacts.core.ui.ext.testTag
+import app.purrfacts.core.ui.R as CoreUiR
 
-@VisibleForTesting(otherwise = VisibleForTesting.PRIVATE)
+@VisibleForTesting
 enum class FactScreenTestTags {
     MULTIPLE_CATS_INDICATOR,
     FACT_LENGTH_INDICATOR,
@@ -48,7 +48,7 @@ enum class FactScreenTestTags {
 internal fun FactScreen(
     viewModel: FactViewModel = hiltViewModel()
 ) {
-    LaunchedEffect(true) {
+    LaunchedEffect(Unit) {
         viewModel.loadStartingFact()
     }
 
@@ -56,35 +56,40 @@ internal fun FactScreen(
         factUiState = viewModel.uiState,
         onUpdateFactBtnClicked = {
             viewModel.updateFact()
+        },
+        onRetryButtonClicked = {
+            viewModel.onRetryButtonClicked()
         }
     )
 }
 
 @Composable
 internal fun FactScreen(
-    factUiState: Result<FactViewModel.FactUiState>,
+    factUiState: FactUiState,
     onUpdateFactBtnClicked: () -> Unit,
+    onRetryButtonClicked: () -> Unit,
 ) {
     when (factUiState) {
-        Result.Loading -> LoadingIndicator()
-        is Result.Success -> FactScreenContent(factUiState.data, onUpdateFactBtnClicked)
-        is Result.Error -> ErrorIndicator(
+        FactUiState.Loading -> LoadingIndicator()
+        is FactUiState.Success -> FactScreenContent(factUiState.factSpec, onUpdateFactBtnClicked)
+        is FactUiState.Error -> ErrorIndicator(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0x88FFFFFF)),
-            customMessage = factUiState.exception.message,
-            retryAllowed = true
-        ) {}
+            customMessage = stringResource(id = factUiState.errorMessageResId),
+            retryAllowed = true,
+            onRetryButtonClicked = onRetryButtonClicked
+        )
     }
 }
 
 @Composable
 private fun FactScreenContent(
-    factUiState: FactViewModel.FactUiState,
+    factSpec: FactSpec,
     onUpdateFactBtnClicked: () -> Unit
 ) {
-    val isMultipleCatsFactNoteVisible = factUiState.containsCats
-    val displayedFact = factUiState.fact
+    val isMultipleCatsFactNoteVisible = factSpec.containsCats
+    val displayedFact = factSpec.fact
     val context = LocalContext.current
 
     Column(
@@ -128,9 +133,9 @@ private fun FactScreenContent(
             style = MaterialTheme.typography.bodyLarge
         )
 
-        AnimatedVisibility(visible = factUiState.isLongFact) {
+        AnimatedVisibility(visible = factSpec.isLongFact) {
             Text(
-                text = stringResource(R.string.length_indicator_template, factUiState.fact.length),
+                text = stringResource(R.string.length_indicator_template, factSpec.fact.length),
                 style = MaterialTheme.typography.bodySmall,
                 modifier = Modifier
                     .align(Alignment.End)
@@ -158,14 +163,15 @@ private fun FactScreenContent(
 private fun FactScreenPreview() {
     AppTheme {
         FactScreen(
-            factUiState = Result.Success(
-                FactViewModel.FactUiState(
+            factUiState = FactUiState.Success(
+                FactSpec(
                     fact = "This is a fact for multiple cats.\n${LoremIpsum(10).values.first()}",
                     containsCats = true,
                     isLongFact = true,
                 )
             ),
-            onUpdateFactBtnClicked = {}
+            onUpdateFactBtnClicked = {},
+            onRetryButtonClicked = {}
         )
     }
 }
@@ -175,8 +181,21 @@ private fun FactScreenPreview() {
 private fun FactScreenOnLoadingStatePreview() {
     AppTheme {
         FactScreen(
-            factUiState = Result.Loading,
-            onUpdateFactBtnClicked = {}
+            factUiState = FactUiState.Loading,
+            onUpdateFactBtnClicked = {},
+            onRetryButtonClicked = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FactScreenOnErrorStatePreview() {
+    AppTheme {
+        FactScreen(
+            factUiState = FactUiState.Error(CoreUiR.string.error_occurred),
+            onUpdateFactBtnClicked = {},
+            onRetryButtonClicked = {}
         )
     }
 }

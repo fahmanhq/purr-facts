@@ -24,4 +24,8 @@ class FakeLocalFactDataSource(
         facts.add(factDbEntity)
         return factDbEntity
     }
+
+    override suspend fun getAllSavedFacts(): List<FactDbEntity> {
+        return facts
+    }
 }

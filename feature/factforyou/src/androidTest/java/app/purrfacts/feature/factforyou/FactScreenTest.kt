@@ -9,19 +9,17 @@ import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.filters.MediumTest
 import androidx.test.platform.app.InstrumentationRegistry
 import app.purrfacts.core.testing.android.onNodeWithTag
-import app.purrfacts.core.ui.Result
 import app.purrfacts.core.ui.component.CommonComponentTestTags
 import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import app.purrfacts.core.ui.R as CoreUiR
 
 private const val LONG_FACT_THRESHOLD = 100
 
-@MediumTest
 @RunWith(AndroidJUnit4::class)
 class FactScreenTest {
 
@@ -63,9 +61,11 @@ class FactScreenTest {
 
     @Test
     fun multipleCatsFactIndicatorIsDisplayed_whenFactIsALongFact() {
-        val longFact = "Cats are often valued by humans for companionship and their ability to hunt vermin. " +
-                "They are skilled predators known for their stealth and agility."
-        val expectedLengthText = appContext.getString(R.string.length_indicator_template, longFact.length)
+        val longFact =
+            "Cats are often valued by humans for companionship and their ability to hunt vermin. " +
+                    "They are skilled predators known for their stealth and agility."
+        val expectedLengthText =
+            appContext.getString(R.string.length_indicator_template, longFact.length)
 
         setupContentToTest(longFact)
 
@@ -90,8 +90,9 @@ class FactScreenTest {
     fun loadingIndicatorIsDisplayed_whenFactIsLoading() {
         composeTestRule.setContent {
             FactScreen(
-                factUiState = Result.Loading,
-                onUpdateFactBtnClicked = {}
+                factUiState = FactUiState.Loading,
+                onUpdateFactBtnClicked = {},
+                onRetryButtonClicked = {}
             )
         }
 
@@ -109,17 +110,18 @@ class FactScreenTest {
 
     @Test
     fun errorIndicatorIsDisplayed_whenFactIsError() {
-        val sampleError = Exception("Sample error")
+        val sampleErrorMessageResId = CoreUiR.string.error_msg_unknown_issue
         composeTestRule.setContent {
             FactScreen(
-                factUiState = Result.Error(sampleError),
-                onUpdateFactBtnClicked = {}
+                factUiState = FactUiState.Error(sampleErrorMessageResId),
+                onUpdateFactBtnClicked = {},
+                onRetryButtonClicked = {}
             )
         }
 
         composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
             .assertIsDisplayed()
-        composeTestRule.onNodeWithText(sampleError.message!!)
+        composeTestRule.onNodeWithText(appContext.getString(sampleErrorMessageResId))
             .assertIsDisplayed()
     }
 
@@ -148,17 +150,39 @@ class FactScreenTest {
         assertThat(callbackCalled).isTrue()
     }
 
+    @Test
+    fun onRetryButtonClickedCallbackIsCalled_whenRetryBtnClicked() {
+        var callbackCalled = false
+
+        val sampleErrorMessageResId = CoreUiR.string.error_msg_unknown_issue
+        composeTestRule.setContent {
+            FactScreen(
+                factUiState = FactUiState.Error(sampleErrorMessageResId),
+                onUpdateFactBtnClicked = {},
+                onRetryButtonClicked = { callbackCalled = true }
+            )
+        }
+
+        composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(appContext.getString(CoreUiR.string.retry))
+            .performClick()
+
+        assertThat(callbackCalled).isTrue()
+    }
+
     private fun setupContentToTest(fact: String, onUpdateFactBtnClicked: () -> Unit = {}) {
         composeTestRule.setContent {
             FactScreen(
-                factUiState = Result.Success(
-                    FactViewModel.FactUiState(
+                factUiState = FactUiState.Success(
+                    FactSpec(
                         fact = fact,
                         containsCats = fact.contains("cats", ignoreCase = true),
                         isLongFact = fact.length.toLong() > LONG_FACT_THRESHOLD
                     )
                 ),
-                onUpdateFactBtnClicked = onUpdateFactBtnClicked
+                onUpdateFactBtnClicked = onUpdateFactBtnClicked,
+                onRetryButtonClicked = {}
             )
         }
     }
