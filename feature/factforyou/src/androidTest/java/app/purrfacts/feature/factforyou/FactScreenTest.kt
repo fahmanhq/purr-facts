@@ -16,6 +16,7 @@ import com.google.common.truth.Truth.assertThat
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import app.purrfacts.core.ui.R as CoreUiR
 
 private const val LONG_FACT_THRESHOLD = 100
 
@@ -90,7 +91,8 @@ class FactScreenTest {
         composeTestRule.setContent {
             FactScreen(
                 factUiState = FactUiState.Loading,
-                onUpdateFactBtnClicked = {}
+                onUpdateFactBtnClicked = {},
+                onRetryButtonClicked = {}
             )
         }
 
@@ -108,17 +110,18 @@ class FactScreenTest {
 
     @Test
     fun errorIndicatorIsDisplayed_whenFactIsError() {
-        val sampleError = Exception("Sample error")
+        val sampleErrorMessageResId = CoreUiR.string.error_msg_unknown_issue
         composeTestRule.setContent {
             FactScreen(
-                factUiState = FactUiState.Error(sampleError),
-                onUpdateFactBtnClicked = {}
+                factUiState = FactUiState.Error(sampleErrorMessageResId),
+                onUpdateFactBtnClicked = {},
+                onRetryButtonClicked = {}
             )
         }
 
         composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
             .assertIsDisplayed()
-        composeTestRule.onNodeWithText(sampleError.message!!)
+        composeTestRule.onNodeWithText(appContext.getString(sampleErrorMessageResId))
             .assertIsDisplayed()
     }
 
@@ -147,6 +150,27 @@ class FactScreenTest {
         assertThat(callbackCalled).isTrue()
     }
 
+    @Test
+    fun onRetryButtonClickedCallbackIsCalled_whenRetryBtnClicked() {
+        var callbackCalled = false
+
+        val sampleErrorMessageResId = CoreUiR.string.error_msg_unknown_issue
+        composeTestRule.setContent {
+            FactScreen(
+                factUiState = FactUiState.Error(sampleErrorMessageResId),
+                onUpdateFactBtnClicked = {},
+                onRetryButtonClicked = { callbackCalled = true }
+            )
+        }
+
+        composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(appContext.getString(CoreUiR.string.retry))
+            .performClick()
+
+        assertThat(callbackCalled).isTrue()
+    }
+
     private fun setupContentToTest(fact: String, onUpdateFactBtnClicked: () -> Unit = {}) {
         composeTestRule.setContent {
             FactScreen(
@@ -157,7 +181,8 @@ class FactScreenTest {
                         isLongFact = fact.length.toLong() > LONG_FACT_THRESHOLD
                     )
                 ),
-                onUpdateFactBtnClicked = onUpdateFactBtnClicked
+                onUpdateFactBtnClicked = onUpdateFactBtnClicked,
+                onRetryButtonClicked = {}
             )
         }
     }

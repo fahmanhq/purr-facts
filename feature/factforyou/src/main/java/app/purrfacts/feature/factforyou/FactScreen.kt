@@ -35,6 +35,7 @@ import app.purrfacts.core.ui.AppTheme
 import app.purrfacts.core.ui.component.ErrorIndicator
 import app.purrfacts.core.ui.component.LoadingIndicator
 import app.purrfacts.core.ui.ext.testTag
+import app.purrfacts.core.ui.R as CoreUiR
 
 @VisibleForTesting
 enum class FactScreenTestTags {
@@ -55,6 +56,9 @@ internal fun FactScreen(
         factUiState = viewModel.uiState,
         onUpdateFactBtnClicked = {
             viewModel.updateFact()
+        },
+        onRetryButtonClicked = {
+            viewModel.onRetryButtonClicked()
         }
     )
 }
@@ -63,6 +67,7 @@ internal fun FactScreen(
 internal fun FactScreen(
     factUiState: FactUiState,
     onUpdateFactBtnClicked: () -> Unit,
+    onRetryButtonClicked: () -> Unit,
 ) {
     when (factUiState) {
         FactUiState.Loading -> LoadingIndicator()
@@ -71,9 +76,10 @@ internal fun FactScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0x88FFFFFF)),
-            customMessage = factUiState.throwable.message,
-            retryAllowed = true
-        ) {}
+            customMessage = stringResource(id = factUiState.errorMessageResId),
+            retryAllowed = true,
+            onRetryButtonClicked = onRetryButtonClicked
+        )
     }
 }
 
@@ -164,7 +170,8 @@ private fun FactScreenPreview() {
                     isLongFact = true,
                 )
             ),
-            onUpdateFactBtnClicked = {}
+            onUpdateFactBtnClicked = {},
+            onRetryButtonClicked = {}
         )
     }
 }
@@ -175,7 +182,20 @@ private fun FactScreenOnLoadingStatePreview() {
     AppTheme {
         FactScreen(
             factUiState = FactUiState.Loading,
-            onUpdateFactBtnClicked = {}
+            onUpdateFactBtnClicked = {},
+            onRetryButtonClicked = {}
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun FactScreenOnErrorStatePreview() {
+    AppTheme {
+        FactScreen(
+            factUiState = FactUiState.Error(CoreUiR.string.error_occurred),
+            onUpdateFactBtnClicked = {},
+            onRetryButtonClicked = {}
         )
     }
 }

@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTestApi::class)
-
 package app.purrfacts.feature.factforyou
 
 import android.content.Context
@@ -20,7 +18,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import app.purrfacts.core.ui.R as CoreUiR
 
+@OptIn(ExperimentalTestApi::class)
 @RunWith(AndroidJUnit4::class)
 class FactScreenToViewModelIntegrationTest {
 
@@ -54,14 +54,14 @@ class FactScreenToViewModelIntegrationTest {
 
     @Test
     fun errorIndicatorIsDisplayed_whenUiStateIsError() {
-        val sampleException = Exception("Sample Error")
-        viewModel.uiState = FactUiState.Error(sampleException)
+        val sampleErrorMessageResId = CoreUiR.string.error_msg_unknown_issue
+        viewModel.uiState = FactUiState.Error(sampleErrorMessageResId)
 
         composeTestRule
             .onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText(sampleException.message!!)
+            .onNodeWithText(appContext.getString(sampleErrorMessageResId))
             .assertIsDisplayed()
     }
 

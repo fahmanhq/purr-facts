@@ -1,5 +1,6 @@
 package app.purrfacts.feature.factforyou
 
+import androidx.annotation.StringRes
 import androidx.annotation.VisibleForTesting
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -9,7 +10,9 @@ import androidx.lifecycle.viewModelScope
 import app.purrfacts.data.api.repository.FactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import java.io.IOException
 import javax.inject.Inject
+import app.purrfacts.core.ui.R as CoreUiR
 
 private const val LONG_FACT_THRESHOLD = 100
 private const val CATS_KEYWORD = "cats"
@@ -25,6 +28,9 @@ class FactViewModel @Inject constructor(
     var uiState by mutableStateOf<FactUiState>(FactUiState.Loading)
         @VisibleForTesting set
 
+    var thingToRetry: (() -> Unit)? = null
+        private set
+
     fun loadStartingFact() {
         if (isInit) {
             viewModelScope.launch {
@@ -39,7 +45,8 @@ class FactViewModel @Inject constructor(
                     }
                     isInit = false
                 }.onFailure {
-                    uiState = FactUiState.Error(it)
+                    uiState = FactUiState.Error(getReadableErrorMessage(it))
+                    thingToRetry = { loadStartingFact() }
                     it.printStackTrace()
                 }
             }
@@ -58,10 +65,17 @@ class FactViewModel @Inject constructor(
                     )
                 }
             }.onFailure {
-                uiState = FactUiState.Error(it)
+                uiState = FactUiState.Error(getReadableErrorMessage(it))
+                thingToRetry = { updateFact() }
                 it.printStackTrace()
             }
         }
+    }
+
+    @StringRes
+    private fun getReadableErrorMessage(throwable: Throwable): Int = when (throwable) {
+        is IOException -> CoreUiR.string.error_msg_network_issue
+        else -> CoreUiR.string.error_msg_unknown_issue
     }
 
     @VisibleForTesting
@@ -70,4 +84,9 @@ class FactViewModel @Inject constructor(
         containsCats = fact.contains(CATS_KEYWORD, ignoreCase = true),
         isLongFact = fact.length > LONG_FACT_THRESHOLD
     )
+
+    fun onRetryButtonClicked() {
+        thingToRetry?.invoke()
+        thingToRetry = null
+    }
 }

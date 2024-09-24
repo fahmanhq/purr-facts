@@ -11,6 +11,7 @@ import io.mockk.junit4.MockKRule
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import app.purrfacts.core.ui.R as CoreUiR
 
 class FactViewModelTest {
 
@@ -31,7 +32,7 @@ class FactViewModelTest {
     }
 
     @Test
-    fun `loadStartingFact should get the last saved fact and set as new ui state`() {
+    fun `loadStartingFact should get the last saved fact, set as new ui state, and set isInit to false`() {
         val savedFact = Fact(
             id = 1,
             fact = "Last Fact"
@@ -45,6 +46,7 @@ class FactViewModelTest {
 
         val factSpec = (sut.uiState as FactUiState.Success).factSpec
         assertThat(factSpec.fact).isEqualTo(savedFact.fact)
+        assertThat(sut.isInit).isFalse()
     }
 
     @Test
@@ -53,6 +55,17 @@ class FactViewModelTest {
 
         sut.loadStartingFact()
         coVerify(exactly = 0) { factRepository.getLastSavedFact() }
+    }
+
+    @Test
+    fun `loadStartingFact should set ui state to error if error occurred and isInit still set to true`() {
+        val sampleException = Exception("Sample error")
+        coEvery { factRepository.getLastSavedFact() } throws sampleException
+
+        sut.loadStartingFact()
+        assertThat(sut.uiState)
+            .isEqualTo(FactUiState.Error(CoreUiR.string.error_msg_unknown_issue))
+        assertThat(sut.isInit).isTrue()
     }
 
     @Test
