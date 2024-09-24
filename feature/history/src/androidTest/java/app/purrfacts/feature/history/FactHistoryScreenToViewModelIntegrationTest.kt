@@ -11,7 +11,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import app.purrfacts.core.testing.android.hasTestTag
 import app.purrfacts.core.testing.android.onNodeWithTag
-import app.purrfacts.core.ui.Result
 import app.purrfacts.core.ui.component.CommonComponentTestTags
 import app.purrfacts.data.api.model.Fact
 import app.purrfacts.data.testing.datasource.FakeFactRepository
@@ -38,7 +37,7 @@ class FactHistoryScreenToViewModelIntegrationTest {
         composeTestRule.setContent {
             FactHistoryScreen(viewModel)
         }
-        viewModel.uiState = Result.Loading
+        viewModel.uiState = FactHistoryUiState.Loading
 
         composeTestRule
             .onNodeWithTag(CommonComponentTestTags.LOADING_INDICATOR)
@@ -53,14 +52,14 @@ class FactHistoryScreenToViewModelIntegrationTest {
         composeTestRule.setContent {
             FactHistoryScreen(viewModel)
         }
-        val sampleException = Exception("Sample Error")
-        viewModel.uiState = Result.Error(sampleException)
+        val sampleErrorMessageResId = app.purrfacts.core.ui.R.string.error_msg_unknown_issue
+        viewModel.uiState = FactHistoryUiState.Error(sampleErrorMessageResId)
 
         composeTestRule
             .onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
             .assertIsDisplayed()
         composeTestRule
-            .onNodeWithText(sampleException.message!!)
+            .onNodeWithText(appContext.getString(sampleErrorMessageResId))
             .assertIsDisplayed()
     }
 

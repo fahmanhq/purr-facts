@@ -1,7 +1,7 @@
 package app.purrfacts.feature.history
 
 import app.purrfacts.core.testing.MainDispatcherRule
-import app.purrfacts.core.ui.Result
+import app.purrfacts.core.ui.R
 import app.purrfacts.data.api.model.Fact
 import app.purrfacts.data.api.repository.FactRepository
 import com.google.common.truth.Truth.assertThat
@@ -40,7 +40,7 @@ class FactHistoryViewModelTest {
         coEvery { factRepository.getAllSavedFacts() } returns history
         sut.loadFactHistory()
         assertThat(sut.uiState)
-            .isEqualTo(Result.Success(history))
+            .isEqualTo(FactHistoryUiState.Success(history))
     }
 
     @Test
@@ -53,12 +53,13 @@ class FactHistoryViewModelTest {
     }
 
     @Test
-    fun `loadFactHistory should set ui state to error if error occurred`() {
+    fun `loadFactHistory should set ui state to error if error occurred and isInit still set to true`() {
         val sampleException = Exception("Sample error")
         coEvery { factRepository.getAllSavedFacts() } throws sampleException
 
         sut.loadFactHistory()
         assertThat(sut.uiState)
-            .isEqualTo(Result.Error(sampleException))
+            .isEqualTo(FactHistoryUiState.Error(R.string.error_msg_unknown_issue))
+        assertThat(sut.isInit).isTrue()
     }
 }

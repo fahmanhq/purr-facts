@@ -28,8 +28,7 @@ class FactViewModel @Inject constructor(
     var uiState by mutableStateOf<FactUiState>(FactUiState.Loading)
         @VisibleForTesting set
 
-    var thingToRetry: (() -> Unit)? = null
-        private set
+    private var thingToRetry: (() -> Unit)? = null
 
     fun loadStartingFact() {
         if (isInit) {
@@ -46,7 +45,7 @@ class FactViewModel @Inject constructor(
                     isInit = false
                 }.onFailure {
                     uiState = FactUiState.Error(getReadableErrorMessage(it))
-                    thingToRetry = { loadStartingFact() }
+                    thingToRetry = ::loadStartingFact
                     it.printStackTrace()
                 }
             }
@@ -66,7 +65,7 @@ class FactViewModel @Inject constructor(
                 }
             }.onFailure {
                 uiState = FactUiState.Error(getReadableErrorMessage(it))
-                thingToRetry = { updateFact() }
+                thingToRetry = ::updateFact
                 it.printStackTrace()
             }
         }

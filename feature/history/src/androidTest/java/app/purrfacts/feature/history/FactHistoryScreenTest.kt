@@ -5,12 +5,13 @@ import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsNotDisplayed
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
+import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import app.purrfacts.core.testing.android.onNodeWithTag
-import app.purrfacts.core.ui.Result
 import app.purrfacts.core.ui.component.CommonComponentTestTags
 import app.purrfacts.data.api.model.Fact
+import com.google.common.truth.Truth
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -31,9 +32,9 @@ class FactHistoryScreenTest {
             Fact(2, "Fact 2"),
             Fact(3, "Fact 3")
         )
-        val uiState = Result.Success(factHistory)
+        val uiState = FactHistoryUiState.Success(factHistory)
 
-        setUiStateToCompose(uiState)
+        setUiStateToCompose(uiState) {}
 
         factHistory.forEach {
             composeTestRule.onNodeWithText(it.fact).assertIsDisplayed()
@@ -42,9 +43,9 @@ class FactHistoryScreenTest {
 
     @Test
     fun factHistoryEmptyPlaceholderIsDisplayed_whenHistoryIsEmpty() {
-        val uiState = Result.Success(emptyList<Fact>())
+        val uiState = FactHistoryUiState.Success(emptyList<Fact>())
 
-        setUiStateToCompose(uiState)
+        setUiStateToCompose(uiState) {}
 
         composeTestRule.onNodeWithTag(FactHistoryScreenTestTags.EMPTY_HISTORY_PLACEHOLDER)
             .assertIsDisplayed()
@@ -55,9 +56,9 @@ class FactHistoryScreenTest {
 
     @Test
     fun loadingIndicatorIsDisplayed_whenFactHistoryIsLoading() {
-        val uiState = Result.Loading
+        val uiState = FactHistoryUiState.Loading
 
-        setUiStateToCompose(uiState)
+        setUiStateToCompose(uiState) {}
 
         composeTestRule.onNodeWithTag(CommonComponentTestTags.LOADING_INDICATOR)
             .assertIsDisplayed()
@@ -65,9 +66,9 @@ class FactHistoryScreenTest {
 
     @Test
     fun loadingIndicatorIsNotDisplayed_whenFactHistoryIsNotLoading() {
-        val uiState = Result.Success(emptyList<Fact>())
+        val uiState = FactHistoryUiState.Success(emptyList<Fact>())
 
-        setUiStateToCompose(uiState)
+        setUiStateToCompose(uiState) {}
 
         composeTestRule.onNodeWithTag(CommonComponentTestTags.LOADING_INDICATOR)
             .assertIsNotDisplayed()
@@ -75,31 +76,52 @@ class FactHistoryScreenTest {
 
     @Test
     fun errorIndicatorIsDisplayed_whenFactHistoryIsError() {
-        val sampleException = Exception("Sample exception")
-        val uiState = Result.Error(sampleException)
+        val sampleErrorMessageResId = app.purrfacts.core.ui.R.string.error_msg_unknown_issue
+        val uiState = FactHistoryUiState.Error(sampleErrorMessageResId)
 
-        setUiStateToCompose(uiState)
+        setUiStateToCompose(uiState) {}
 
         composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
             .assertIsDisplayed()
-        composeTestRule.onNodeWithText(sampleException.message ?: "")
+        composeTestRule.onNodeWithText(appContext.getString(sampleErrorMessageResId))
             .assertIsDisplayed()
     }
 
     @Test
     fun errorIndicatorIsNotDisplayed_whenFactHistoryIsNotError() {
-        val uiState = Result.Success(emptyList<Fact>())
+        val uiState = FactHistoryUiState.Success(emptyList<Fact>())
 
-        setUiStateToCompose(uiState)
+        setUiStateToCompose(uiState) {}
 
         composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
             .assertIsNotDisplayed()
     }
 
-    private fun setUiStateToCompose(uiState: Result<List<Fact>>) {
+    @Test
+    fun onRetryButtonClickedCallbackIsCalled_whenRetryBtnClicked() {
+        var callbackCalled = false
+
+        val sampleErrorMessageResId = app.purrfacts.core.ui.R.string.error_msg_unknown_issue
+        setUiStateToCompose(
+            FactHistoryUiState.Error(sampleErrorMessageResId),
+            onRetryButtonClicked = {
+                callbackCalled = true
+            }
+        )
+
+        composeTestRule.onNodeWithTag(CommonComponentTestTags.ERROR_INDICATOR)
+            .assertIsDisplayed()
+        composeTestRule.onNodeWithText(appContext.getString(app.purrfacts.core.ui.R.string.retry))
+            .performClick()
+
+        Truth.assertThat(callbackCalled).isTrue()
+    }
+
+    private fun setUiStateToCompose(uiState: FactHistoryUiState, onRetryButtonClicked: () -> Unit) {
         composeTestRule.setContent {
             FactHistoryScreen(
-                uiState = uiState
+                uiState = uiState,
+                onRetryButtonClicked = onRetryButtonClicked
             )
         }
     }

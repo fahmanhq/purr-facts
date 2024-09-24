@@ -24,7 +24,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.purrfacts.core.ui.AppTheme
-import app.purrfacts.core.ui.Result
 import app.purrfacts.core.ui.component.ErrorIndicator
 import app.purrfacts.core.ui.component.LoadingIndicator
 import app.purrfacts.core.ui.ext.testTag
@@ -43,22 +42,24 @@ internal fun FactHistoryScreen(
     }
 
     FactHistoryScreen(
-        uiState = viewModel.uiState
+        uiState = viewModel.uiState,
+        onRetryButtonClicked = viewModel::onRetryButtonClicked
     )
 }
 
 @Composable
-internal fun FactHistoryScreen(uiState: Result<List<Fact>>) {
+internal fun FactHistoryScreen(uiState: FactHistoryUiState, onRetryButtonClicked: () -> Unit) {
     when (uiState) {
-        Result.Loading -> LoadingIndicator()
-        is Result.Success -> FactHistoryScreenContent(uiState.data)
-        is Result.Error -> ErrorIndicator(
+        FactHistoryUiState.Loading -> LoadingIndicator()
+        is FactHistoryUiState.Success -> FactHistoryScreenContent(uiState.facts)
+        is FactHistoryUiState.Error -> ErrorIndicator(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color(0x88FFFFFF)),
-            customMessage = uiState.exception.message,
-            retryAllowed = true
-        ) {}
+            customMessage = stringResource(id = uiState.errorMessageResId),
+            retryAllowed = true,
+            onRetryButtonClicked = onRetryButtonClicked
+        )
     }
 }
 
@@ -110,12 +111,13 @@ private fun FactHistoryItem(fact: Fact) {
 private fun FactHistoryScreenPreview() {
     AppTheme {
         FactHistoryScreen(
-            uiState = Result.Success(
+            uiState = FactHistoryUiState.Success(
                 listOf(
                     Fact(id = 8028, fact = "neglegentur"),
                     Fact(id = 5179, fact = "appetere")
                 )
-            )
+            ),
+            onRetryButtonClicked = {}
         )
     }
 }
@@ -125,9 +127,10 @@ private fun FactHistoryScreenPreview() {
 private fun FactHistoryScreenEmptyStatePreview() {
     AppTheme {
         FactHistoryScreen(
-            uiState = Result.Success(
+            uiState = FactHistoryUiState.Success(
                 emptyList()
-            )
+            ),
+            onRetryButtonClicked = {}
         )
     }
 }
