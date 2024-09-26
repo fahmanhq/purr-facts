@@ -1,10 +1,13 @@
 package app.purrfacts.network
 
+import android.content.Context
 import app.purrfacts.network.serviceapi.FactService
+import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -22,7 +25,7 @@ internal object NetworkModule {
     }
 
     @Provides
-    fun provideOkHttp(): OkHttpClient =
+    fun provideOkHttp(@ApplicationContext context: Context): OkHttpClient =
         OkHttpClient().newBuilder()
             .addInterceptor(
                 HttpLoggingInterceptor().apply {
@@ -33,6 +36,7 @@ internal object NetworkModule {
                     }
                 }
             )
+            .addInterceptor(ChuckerInterceptor(context))
             .build()
 
     @Provides

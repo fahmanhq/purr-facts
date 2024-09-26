@@ -55,6 +55,10 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.retrofit2.kotlinx.serialization.converter)
 
+    // Chucker HTTP Logger
+    debugImplementation(libs.chucker)
+    releaseImplementation(libs.chucker.no.op)
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
 }

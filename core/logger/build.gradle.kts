@@ -7,7 +7,7 @@ plugins {
 }
 
 android {
-    namespace = "app.purrfacts.data.impl"
+    namespace = "app.purrfacts.core.logger"
     compileSdk = 34
 
     defaultConfig {
@@ -33,22 +33,14 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
-    kapt {
-        correctErrorTypes = true
-    }
 }
 
 dependencies {
-    api(project(":data:api"))
-
-    implementation(project(":core:common"))
-    implementation(project(":database"))
-    implementation(project(":network"))
-
     // Hilt
     implementation(libs.hilt)
     kapt(libs.hilt.android.compiler)
 
-    testImplementation(project(":core:testing"))
-    testImplementation(project(":data:testing"))
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 }

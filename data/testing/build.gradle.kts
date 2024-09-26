@@ -32,7 +32,6 @@ android {
 }
 
 dependencies {
-    implementation(project(":core:common"))
     implementation(project(":data:api"))
     implementation(project(":database"))
     implementation(project(":network"))

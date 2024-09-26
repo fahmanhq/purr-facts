@@ -4,6 +4,9 @@ plugins {
     alias(libs.plugins.hilt.android)
     alias(libs.plugins.jetbrains.kotlin.serialization)
 
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.google.firebase.crashlytics)
+
     kotlin("kapt")
 }
 
@@ -58,6 +61,7 @@ android {
 
 dependencies {
     implementation(project(":core:ui"))
+    implementation(project(":core:logger"))
 
     // Feature Modules
     implementation(project(":feature:factforyou"))
@@ -78,6 +82,10 @@ dependencies {
 
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
 
     // Hilt
     implementation(libs.hilt)
