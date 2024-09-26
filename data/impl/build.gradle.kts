@@ -51,4 +51,5 @@ dependencies {
 
     testImplementation(project(":core:testing"))
     testImplementation(project(":data:testing"))
+    androidTestImplementation(project(":core:testing-android"))
 }

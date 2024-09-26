@@ -24,3 +24,20 @@ internal class DefaultAppLogger(
         errorLoggers.forEach { it.logError(exception, message) }
     }
 }
+
+class FakeAppLogger(
+    private val logBuffer: MutableList<String> = mutableListOf()
+) : AppLogger {
+
+    override fun logMessage(message: String, level: CommonLogger.LogLevel) {
+        logBuffer.add(message)
+    }
+
+    override fun logEvent(event: String, params: Map<String, String>?) {
+        logBuffer.add(event)
+    }
+
+    override fun logError(exception: Throwable, message: String?) {
+        logBuffer.add(exception.message.orEmpty())
+    }
+}

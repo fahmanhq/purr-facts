@@ -1,5 +1,6 @@
 package app.purrfacts.feature.factforyou
 
+import app.purrfacts.core.logger.AppLogger
 import app.purrfacts.core.testing.MainDispatcherRule
 import app.purrfacts.data.api.model.Fact
 import app.purrfacts.data.api.repository.FactRepository
@@ -8,6 +9,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit4.MockKRule
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,11 +26,17 @@ class FactViewModelTest {
     @MockK
     lateinit var factRepository: FactRepository
 
+    @MockK(relaxed = true)
+    lateinit var appLogger: AppLogger
+
     private lateinit var sut: FactViewModel
 
     @Before
     fun setup() {
-        sut = FactViewModel(factRepository)
+        sut = FactViewModel(
+            factRepository = factRepository,
+            appLogger = appLogger
+        )
     }
 
     @Test
@@ -66,6 +74,7 @@ class FactViewModelTest {
         assertThat(sut.uiState)
             .isEqualTo(FactUiState.Error(CoreUiR.string.error_msg_unknown_issue))
         assertThat(sut.isInit).isTrue()
+        verify { appLogger.logError(sampleException, any()) }
     }
 
     @Test
@@ -83,6 +92,17 @@ class FactViewModelTest {
 
         val factSpec = (sut.uiState as FactUiState.Success).factSpec
         assertThat(factSpec.fact).isEqualTo(newFact.fact)
+    }
+
+    @Test
+    fun `updateFact should set ui state to error if error occurred`() {
+        val sampleException = Exception("Sample error")
+        coEvery { factRepository.getNewFact() } throws sampleException
+
+        sut.updateFact()
+        assertThat(sut.uiState)
+            .isEqualTo(FactUiState.Error(CoreUiR.string.error_msg_unknown_issue))
+        verify { appLogger.logError(sampleException, any()) }
     }
 
     @Test

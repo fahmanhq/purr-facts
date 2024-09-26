@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.purrfacts.core.logger.AppLogger
 import app.purrfacts.core.ui.R
 import app.purrfacts.data.api.repository.FactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -15,7 +16,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class FactHistoryViewModel @Inject constructor(
-    private val factRepository: FactRepository
+    private val factRepository: FactRepository,
+    private val appLogger: AppLogger
 ) : ViewModel() {
 
     var isInit = true
@@ -38,7 +40,7 @@ class FactHistoryViewModel @Inject constructor(
                 }.onFailure {
                     uiState = FactHistoryUiState.Error(getReadableErrorMessage(it))
                     thingToRetry = ::loadFactHistory
-                    it.printStackTrace()
+                    appLogger.logError(it, "Error loading fact history")
                 }
             }
         }

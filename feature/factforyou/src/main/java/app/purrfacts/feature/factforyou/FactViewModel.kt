@@ -7,6 +7,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.purrfacts.core.logger.AppLogger
 import app.purrfacts.data.api.repository.FactRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -19,7 +20,8 @@ private const val CATS_KEYWORD = "cats"
 
 @HiltViewModel
 class FactViewModel @Inject constructor(
-    private val factRepository: FactRepository
+    private val factRepository: FactRepository,
+    private val appLogger: AppLogger
 ) : ViewModel() {
 
     var isInit = true
@@ -46,7 +48,7 @@ class FactViewModel @Inject constructor(
                 }.onFailure {
                     uiState = FactUiState.Error(getReadableErrorMessage(it))
                     thingToRetry = ::loadStartingFact
-                    it.printStackTrace()
+                    appLogger.logError(it, "Error loading starting fact")
                 }
             }
         }
@@ -66,7 +68,7 @@ class FactViewModel @Inject constructor(
             }.onFailure {
                 uiState = FactUiState.Error(getReadableErrorMessage(it))
                 thingToRetry = ::updateFact
-                it.printStackTrace()
+                appLogger.logError(it, "Error updating fact")
             }
         }
     }

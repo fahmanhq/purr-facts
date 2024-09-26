@@ -1,5 +1,6 @@
 package app.purrfacts.feature.history
 
+import app.purrfacts.core.logger.AppLogger
 import app.purrfacts.core.testing.MainDispatcherRule
 import app.purrfacts.core.ui.R
 import app.purrfacts.data.api.model.Fact
@@ -9,6 +10,7 @@ import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.MockK
 import io.mockk.junit4.MockKRule
+import io.mockk.verify
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,11 +26,14 @@ class FactHistoryViewModelTest {
     @MockK
     lateinit var factRepository: FactRepository
 
+    @MockK(relaxed = true)
+    lateinit var appLogger: AppLogger
+
     private lateinit var sut: FactHistoryViewModel
 
     @Before
     fun setup() {
-        sut = FactHistoryViewModel(factRepository)
+        sut = FactHistoryViewModel(factRepository, appLogger)
     }
 
     @Test
@@ -61,5 +66,7 @@ class FactHistoryViewModelTest {
         assertThat(sut.uiState)
             .isEqualTo(FactHistoryUiState.Error(R.string.error_msg_unknown_issue))
         assertThat(sut.isInit).isTrue()
+
+        verify { appLogger.logError(sampleException, any()) }
     }
 }
