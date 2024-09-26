@@ -58,6 +58,10 @@
 
 - Common libraries & utils used as a common dependency for instrumentation testing.
 
+### :core:logger
+
+- Contains an API for multi-purposes logging (Debugging needs, Error Tracking, Event Tracking)
+
 ## Technical Decision on Modularization Strategy
 
 ### What is the main idea of this app modularization? Why do you make this kind of structure?
@@ -89,7 +93,7 @@ one big module, the `:data` module, with the mentioned 3 sub-modules.
 In the future if I happen to add another business domain on our app, I can separate it into new big
 module, with each will also implement the 3 sub-modules.
 
-### Why there is no domain layer codes here?
+### Why there is no separate domain modules here?
 
 Domain layer usually contains of domain models and use case classes. In my opinion, use case classes
 can be introduced when we have complex business logic that can be reused in multiple places.
@@ -98,6 +102,16 @@ As this app is only contains simple business logic, I directly use the Repositor
 ViewModels, with the constraint of always using domain models when communicating between
 ViewModels & Repository.
 
-Sometimes, use case class usage can be introduced as a rules, so whether it contains complex or
-simple business logic, we can force our team to always use them on communication between
-ViewModels & Repository. But for this project, I chose not.
+If we want to create separate domain modules, we can just move the domain models and also the
+repository interface to the new domain modules, and then let the `:feature` modules and `:data`
+module depend on the newly created domain module.
+
+Further more, we can separate it in the same manner as the `:data` module, which is splitting into :
+
+1. `:domain:api`, which will contains all domain models, use case class interfaces, and repository
+   interfaces.
+2. `:domain:impl`, which will contains all implementation details in the domain layer, such as use
+   case class implementation, non public models, etc. The repository implementations will keep
+   staying in the `:data` modules.
+3. `:domain:impl-wiring`, contains of DI modules to provide pairings between Use Case interfaces &
+   its implementations.
