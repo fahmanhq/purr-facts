@@ -9,6 +9,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import app.purrfacts.core.logger.FakeAppLogger
 import app.purrfacts.core.testing.android.hasTestTag
 import app.purrfacts.core.testing.android.onNodeWithTag
 import app.purrfacts.core.ui.component.CommonComponentTestTags
@@ -35,7 +36,8 @@ class FactScreenToViewModelIntegrationTest {
     @Before
     fun setUp() {
         viewModel = FactViewModel(
-            factRepository = FakeFactRepository()
+            factRepository = FakeFactRepository(),
+            appLogger = FakeAppLogger()
         )
 
         composeTestRule.setContent {

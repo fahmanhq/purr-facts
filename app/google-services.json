@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "958382862543",
+    "project_id": "purr-facts",
+    "storage_bucket": "purr-facts.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:958382862543:android:da941763857cfbb002c7ba",
+        "android_client_info": {
+          "package_name": "jp.speakbuddy.edisonandroidexercise"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBma1CWd0VIK9gCmsCFoq5dvbZ1FWPlnAg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

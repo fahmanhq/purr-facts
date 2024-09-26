@@ -1,5 +1,3 @@
-@file:OptIn(ExperimentalTestApi::class)
-
 package app.purrfacts.feature.history
 
 import android.content.Context
@@ -9,6 +7,7 @@ import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import app.purrfacts.core.logger.FakeAppLogger
 import app.purrfacts.core.testing.android.hasTestTag
 import app.purrfacts.core.testing.android.onNodeWithTag
 import app.purrfacts.core.ui.component.CommonComponentTestTags
@@ -18,6 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@OptIn(ExperimentalTestApi::class)
 @RunWith(AndroidJUnit4::class)
 class FactHistoryScreenToViewModelIntegrationTest {
 
@@ -31,9 +31,7 @@ class FactHistoryScreenToViewModelIntegrationTest {
 
     @Test
     fun loadingIndicatorIsDisplayed_whenUiStateIsLoading() {
-        viewModel = FactHistoryViewModel(
-            factRepository = FakeFactRepository()
-        )
+        viewModel = createViewModel()
         composeTestRule.setContent {
             FactHistoryScreen(viewModel)
         }
@@ -46,9 +44,7 @@ class FactHistoryScreenToViewModelIntegrationTest {
 
     @Test
     fun errorIndicatorIsDisplayed_whenUiStateIsError() {
-        viewModel = FactHistoryViewModel(
-            factRepository = FakeFactRepository()
-        )
+        viewModel = createViewModel()
         composeTestRule.setContent {
             FactHistoryScreen(viewModel)
         }
@@ -70,11 +66,7 @@ class FactHistoryScreenToViewModelIntegrationTest {
             Fact(2, "Fact 2"),
             Fact(3, "Fact 3")
         )
-        viewModel = FactHistoryViewModel(
-            factRepository = FakeFactRepository(
-                initialFacts = factHistory
-            )
-        )
+        viewModel = createViewModel(initialFacts = factHistory)
         composeTestRule.setContent {
             FactHistoryScreen(viewModel)
         }
@@ -92,9 +84,7 @@ class FactHistoryScreenToViewModelIntegrationTest {
 
     @Test
     fun emptyPlaceholderIsDisplayed_whenUiStateIsSuccessAndHistoryIsEmpty() {
-        viewModel = FactHistoryViewModel(
-            factRepository = FakeFactRepository()
-        )
+        viewModel = createViewModel()
         composeTestRule.setContent {
             FactHistoryScreen(viewModel)
         }
@@ -111,4 +101,9 @@ class FactHistoryScreenToViewModelIntegrationTest {
             )
             .assertIsDisplayed()
     }
+
+    private fun createViewModel(initialFacts: List<Fact> = emptyList()) = FactHistoryViewModel(
+        factRepository = FakeFactRepository(initialFacts),
+        appLogger = FakeAppLogger()
+    )
 }

@@ -1,15 +1,17 @@
 plugins {
     alias(libs.plugins.android.library)
     alias(libs.plugins.jetbrains.kotlin.android)
+
+    alias(libs.plugins.hilt.android)
+    kotlin("kapt")
 }
 
 android {
-    namespace = "app.purrfacts.data.testing"
+    namespace = "app.purrfacts.core.logger"
     compileSdk = 34
 
     defaultConfig {
         minSdk = 24
-
         consumerProguardFiles("consumer-rules.pro")
     }
 
@@ -32,7 +34,13 @@ android {
 }
 
 dependencies {
-    implementation(project(":data:api"))
-    implementation(project(":database"))
-    implementation(project(":network"))
+    // Hilt
+    implementation(libs.hilt)
+    kapt(libs.hilt.android.compiler)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+
+    testImplementation(project(":core:testing"))
 }
