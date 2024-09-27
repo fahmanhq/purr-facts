@@ -34,7 +34,7 @@ enum class FactHistoryScreenTestTags {
 }
 
 @Composable
-internal fun FactHistoryScreen(
+fun FactHistoryScreen(
     viewModel: FactHistoryViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {

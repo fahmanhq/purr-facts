@@ -45,7 +45,7 @@ enum class FactScreenTestTags {
 }
 
 @Composable
-internal fun FactScreen(
+fun FactScreen(
     viewModel: FactViewModel = hiltViewModel()
 ) {
     LaunchedEffect(Unit) {

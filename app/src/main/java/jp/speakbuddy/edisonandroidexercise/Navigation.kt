@@ -8,15 +8,24 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import app.purrfacts.feature.factforyou.FactForYou
+import app.purrfacts.feature.factforyou.FactScreen
 import app.purrfacts.feature.factforyou.factForYouScreen
 import app.purrfacts.feature.history.FactHistory
+import app.purrfacts.feature.history.FactHistoryScreen
 import app.purrfacts.feature.history.factHistoryScreen
 
-data class TopLevelRoute<T : Any>(val route: T, val icon: ImageVector)
+data class TopLevelRoute<T : Any>(
+    val route: T,
+    val icon: ImageVector,
+    val screen: @Composable () -> Unit
+)
 
 val TOP_LEVEL_ROUTES = listOf(
-    TopLevelRoute(route = FactForYou, icon = Icons.Default.Home),
-    TopLevelRoute(route = FactHistory, icon = Icons.Default.DateRange),
+    TopLevelRoute(route = FactForYou, icon = Icons.Default.Home, screen = { FactScreen() }),
+    TopLevelRoute(
+        route = FactHistory,
+        icon = Icons.Default.DateRange,
+        screen = { FactHistoryScreen() }),
 )
 
 @Composable
