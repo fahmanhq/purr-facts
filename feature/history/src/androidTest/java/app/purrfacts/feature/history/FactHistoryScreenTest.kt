@@ -8,6 +8,7 @@ import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import app.purrfacts.core.testing.android.GrantPostNotificationsPermissionRule
 import app.purrfacts.core.testing.android.onNodeWithTag
 import app.purrfacts.core.ui.component.CommonComponentTestTags
 import app.purrfacts.data.api.model.Fact
@@ -19,7 +20,10 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class FactHistoryScreenTest {
 
-    @get:Rule
+    @get:Rule(order = 0)
+    val permissionRule = GrantPostNotificationsPermissionRule()
+
+    @get:Rule(order = 1)
     val composeTestRule = createComposeRule()
 
     private val appContext: Context

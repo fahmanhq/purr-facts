@@ -33,4 +33,5 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     api(libs.androidx.ui.test.junit4)
     api(libs.androidx.ui.test.android)
+    api(libs.androidx.rules)
 }
