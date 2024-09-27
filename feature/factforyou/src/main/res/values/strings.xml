@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="fact_for_you_title">Fact</string>
+    <string name="multiple_cats_indicator_label">Multiple Cats!</string>
+    <string name="multiple_cats_indicator_content_description">Multiple Cats Fact Indicator</string>
+    <string name="length_indicator_template">Length: %1$s</string>
+    <string name="update_fact_btn_label">Update fact</string>
+</resources>
