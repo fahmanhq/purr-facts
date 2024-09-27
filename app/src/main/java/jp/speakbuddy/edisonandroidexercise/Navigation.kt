@@ -17,17 +17,29 @@ import app.purrfacts.feature.history.factHistoryScreen
 data class TopLevelRoute<T : Any>(
     val route: T,
     val icon: ImageVector,
-    val screen: @Composable () -> Unit
+    val screen: @Composable (TopLevelRoute<*>) -> Unit
 )
 
 val TOP_LEVEL_ROUTES = listOf(
-    TopLevelRoute(route = FactForYou, icon = Icons.Default.Home, screen = { FactScreen() }),
+    TopLevelRoute(
+        route = FactForYou,
+        icon = Icons.Default.Home,
+        screen = { FactScreen() }
+    ),
     TopLevelRoute(
         route = FactHistory,
         icon = Icons.Default.DateRange,
-        screen = { FactHistoryScreen() }),
+        screen = {
+            FactHistoryScreen(
+                isBackToActive = it.route == FactHistory,
+            )
+        }
+    ),
 )
 
+/**
+ *  Used if only we prefer nav host over Pager on Home Page
+ */
 @Composable
 fun AppNavHost(navController: NavHostController) {
     NavHost(navController = navController, startDestination = FactForYou) {

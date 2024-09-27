@@ -46,6 +46,21 @@ class FactHistoryViewModel @Inject constructor(
         }
     }
 
+    fun reloadFactHistory() {
+        viewModelScope.launch {
+            runCatching {
+                uiState = FactHistoryUiState.Loading
+                uiState = FactHistoryUiState.Success(
+                    factRepository.getAllSavedFacts()
+                )
+            }.onFailure {
+                uiState = FactHistoryUiState.Error(getReadableErrorMessage(it))
+                thingToRetry = ::reloadFactHistory
+                appLogger.logError(it, "Error reloading fact history")
+            }
+        }
+    }
+
     @StringRes
     private fun getReadableErrorMessage(throwable: Throwable): Int = when (throwable) {
         else -> R.string.error_msg_unknown_issue

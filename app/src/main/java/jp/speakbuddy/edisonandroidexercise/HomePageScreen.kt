@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DateRange
 import androidx.compose.material.icons.filled.Home
@@ -21,12 +20,13 @@ import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import app.purrfacts.core.ui.AppTheme
 import app.purrfacts.feature.factforyou.FactForYou
 import app.purrfacts.feature.history.FactHistory
@@ -39,14 +39,13 @@ internal fun HomePageScreen(
     AppTheme {
         val coroutineScope = rememberCoroutineScope()
         val pagerState = rememberPagerState(pageCount = { topLevelRoutes.size })
+        val activeTopLevelRoute by remember {
+            derivedStateOf { topLevelRoutes[pagerState.currentPage] }
+        }
 
         Scaffold(
             bottomBar = {
-                NavigationBar(
-                    modifier = Modifier
-                        .padding(16.dp)
-                        .clip(RoundedCornerShape(16.dp))
-                ) {
+                NavigationBar() {
                     topLevelRoutes.forEachIndexed { index, topLevelRoute ->
                         NavigationBarItem(
                             selected = pagerState.currentPage == index,
@@ -78,7 +77,7 @@ internal fun HomePageScreen(
                     )
             ) {
                 HorizontalPager(state = pagerState) { pageIdx ->
-                    topLevelRoutes[pageIdx].screen()
+                    topLevelRoutes[pageIdx].screen(activeTopLevelRoute)
                 }
             }
         }

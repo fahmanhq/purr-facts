@@ -35,10 +35,16 @@ enum class FactHistoryScreenTestTags {
 
 @Composable
 fun FactHistoryScreen(
-    viewModel: FactHistoryViewModel = hiltViewModel()
+    viewModel: FactHistoryViewModel = hiltViewModel(),
+    isBackToActive: Boolean = false
 ) {
     LaunchedEffect(Unit) {
         viewModel.loadFactHistory()
+    }
+    LaunchedEffect(isBackToActive) {
+        if (isBackToActive) {
+            viewModel.reloadFactHistory()
+        }
     }
 
     FactHistoryScreen(
